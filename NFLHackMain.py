@@ -36,12 +36,14 @@ def getPlayers(position):
 def calculateShortYardage(RB_ID):
     RBPlayerIDs = getPlayers("RB")
     #May have to make a call to Nitin's method for runningPlays
-    for playID in runningPlays:
-        
+    for rbid in runningPlayDict:
+        for playID in runningPlayDict[rbid]:
+            
 
 
 
-#Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
+# for all plays associated with a rbid, figure out which of them is at yardsToGo <=3
+
 
 #Two Cases from Here:
 
