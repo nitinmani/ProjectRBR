@@ -30,7 +30,24 @@ def getPlayers(position):
         for player in roster["teamPlayers"]:
             if player["positionGroup"] == position or player["position"] == position:
                 allPlayers.append(player["nflId"])
-    print(allPlayers)
+    return allPlayers
 getPlayers("OT")
 getPlayers("RB")
 getPlayers("OL")
+
+
+def calculateShortYardage(RB_ID) :
+
+
+#Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
+
+#Two Cases from Here:
+
+#1.) If team <=3 yards on opponent's goal line (check yardline field). For example, if a RB is on AMS, then anything less than BAR <= 3, WE WANT
+# For this case, calculate the number of successes and failures (check if statID is 3). if not, then its a failure. if is, its a success.
+
+#2.) If team <=3 yards and it is 3rd or 4th down (using down field), calculate whether success or failure 
+
+#Return like a success to failure ratio
+
+#stacks up in a different row
