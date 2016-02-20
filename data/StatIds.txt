@@ -1,0 +1,144 @@
+
+Stat_ID	Name	Comment
+1	Rushing Yards - Minus	Used in addition to the other Rushing stats so that total minus rushing yards can be calculated.
+THIS STAT IS NOT IN USE.
+2	Punt Blocked (Offense)	Punt was blocked.  A blocked punt is a punt that is touched behind the line of scrimmage, and is recovered, or goes out of bounds, behind the line of scrimmage.  If the impetus of the punt takes it beyond the  line of scrimmage, it is not a "blocked punt."
+This stat is used exclusively of the PU, PU_EZ, and PU_TB stats.
+3	1st Down Rushing	A first down or TD occurred due to a rush.
+4	1st Down Passing	A first down or TD occurred due to a pass.
+5	1st Down Penalty	A first down or TD occurred due to a penalty.
+A play can have a first down from a pass or rush and from a penalty.
+6	3rd Down Attempt Converted	3rd down play resulted in a first down or touchdown.
+7	3rd Down Attempt Failed	3rd down play did NOT result in a first down or touchdown.
+8	4th Down Attempt Converted	4th down play resulted in a first down or touchdown
+9	4th Down Attempt Failed	4th down play did NOT result in a first down or touchdown.
+10	Rushing Yards	Rushing yards and credit for a rushing attempt.
+11	Rushing Yards, TD	Rushing yards and credit for a rushing attempt where the result of the play was a touchdown.
+12	Rushing Yards, No Rush	Rushing yards with NO rushing attempt.  This will occur when the initial runner laterals to a second runner, and the second runner possesses the lateral beyond the line of scrimmage.  Both players get rushing yards, but only the 1st player gets a rushing attempt.  The rule is that the last player to possess the ball behind the line of scrimmage gets the rushing attempt.
+13	Rushing Yards, TD, No Rush	Rushing yards and NO rushing attempt, where the result of the play was a touchdown.
+14	Pass Incomplete	Pass attempt, incomplete.
+15	Passing Yards	Passing yards and a pass attempt completed.
+16	Passing Yards, TD	Passing yards and a pass attempt completed that resulted in a touchdown.
+17	Passing Yards, No Pass	In SuperStat, this code was used when the initial pass receiver lateraled to a teammate.  It was later combined with the "Passing Yards" code to determine the passer's (quaterback's) total passing yardage on the play.  IN OUR SYSTEM, THIS CODE SHOULD NOT BE NECESSARY.
+18	Passing Yards, TD, No Pass	Passing yards, no pass attempt, with a result of touchdown.  (See previous code.)  THIS CODE SHOULD NOT BE NECESSARY IN OUR SYSTEM.
+19	Interception (by Passer)	Pass attempt that resulted in an interception.
+20	Sack Yards (Offense)	Number of yards lost on a pass play that resulted in a sack.
+21	Pass Reception Yards	Pass reception and yards.
+22	Pass Reception Yards, TD	Same as previous, except when the play results in a touchdown.
+23	Pass Reception Yards, No Reception	Pass reception yards, no pass reception.  This will occur when the pass receiver laterals to a teammate.  The teammate gets pass reception yards, but no credit for a pass reception.
+24	Pass Reception Yards, TD, No Reception	Same as previous, except when the play results in a touchdown.
+25	Interception Yards	Interception and return yards.
+26	Interception Yards, TD	Same as previous, except when the play results in a touchdown.
+27	Interception Yards, No Interception	Interception yards, with NO credit for an interception.  This will occur when the player who intercepted the pass laterals to a teammate.  The teammate gets interception return yards, but no credit for a pass interception.
+28	Interception Yards, TD, No Interception	Same as previous, except when the play results in a touchdown.
+29	Punting Yards	Punt and length of the punt.
+This stat is not used if
+- the punt results in a touchback; or
+- the punt is received in the endzone, and run out.; or
+- the punt is blocked
+This stat is used exclusively of the PU_EZ, PU_TB, and PU_BK stats.
+30	Punt Inside 20	This stat is recorded when the punt RETURN ended inside the opponents 20 yard line. This is not counted as a punt or towards punting yards.  This stat is used solely to calculate "inside 20" stats.  This stat is used in addition to either a PU or PU_EZ stat.
+31	Punt Into End Zone	SuperStat records this stat when the punt is received in the end-zone, and then run out of the end-zone.  If the play ends in the end-zone for a touchback, the stat is not recorded.
+This stat is used exclusively of the PU,  PU_TB, and PU_BK stats.
+THIS STAT DOESN'T MAKE SENSE TO ME BECAUSE IT'S USUALLY CONSIDERED A GOOD PUNT IF THE BALL IS KICKED HIGH ENOUGH TO PREVENT A RETURN.
+THIS STAT IS UNKNOWN TO ELIAS & THE NFL.
+32	Punt With Touchback	Punt and length of the punt when the play results in a touchback.
+This stat is used exclusively of the PU, PU_EZ, and PU_BK stats.
+33	Punt Return Yards	Punt return and yards.
+34	Punt Return Yards, TD	Same as previous, except when the play results in a touchdown.
+35	Punt Return Yards, No Return	Punt return yards with no credit for a punt return.  This will occur when the player who received the punt laterals to a teammate.  The teammate gets punt return yards, but no credit for a return.
+36	Punt Return Yards, TD, No Return	Same as previous, except when the play results in a touchdown.
+37	Punt Out Of Bounds	Punt went out of bounds, no return on the play.
+38	Punt Downed (No Return)	Punt was downed by kicking team, no return on the play.
+The Player column of this stat will always be NULL.
+39	Punt - Fair Catch	Punt resulted in a fair catch.
+40	Punt - Touchback (No Return)	Punt resulted in a touchback.  This is the receiving teams version of code 1504/28 above.  Both are needed for stat calculations, especially in season cumulative analysis.
+41	Kickoff Yards	Kickoff  and length of kick.
+42	Kickoff Inside 20	Kickoff  and length of kick, where return ended inside the opponents 20 yard line.  This is not counted as a kick or towards kicking yards.  This code is used solely to calculate "inside 20" stats.  Used in addition to a 1701 code.
+43	Kickoff Into End Zone	SuperStat records this stat when the kickoff is received in the end-zone, and then run out of the end-zone.  If the play ends in the end-zone for a touchback, the stat is not recorded.
+COMPARE TO Punt Into End Zone.
+44	Kickoff With Touchback	Kickoff resulted in a touchback
+45	Kickoff Return Yards	Kickoff return and yards.
+46	Kickoff Return Yards, TD	Same as previous, except when the play results in a touchdown.
+47	Kickoff Return Yards, No Return	Kickoff yards with no return.  This will occur when the player who is credited with the return laterals to a teammate.  The teammate gets kickoff return yards, but no credit for a kickoff return.
+48	Kickoff Return Yards, TD, No Return	Same as previous, except when the play results in a touchdown.
+49	Kickoff Out Of Bounds	Kicked ball went out of bounds.
+50	Kickoff - Fair Catch	Kick resulted in a fair catch (no return).
+51	Kickoff - Touchback	Kick resulted in a touchback.  A touchback implies that there is no return.
+52	Fumble - Forced	Player fumbled the ball, fumble was not forced by another player.
+53	Fumble - Not Forced	Player fumbled the ball, fumble was forced by another player.
+54	Fumble - Out Of Bounds	Player fumbled the ball, and the ball went out of bounds.
+55	Own Recovery Yards	Yardage gained/lost by a player after he recovered a fumble by his own team.
+56	Own Recovery Yards, TD	Same as previous, except when the play results in a touchdown.
+57	Own Recovery Yards, No Recovery	If a player recovered a fumble by his own team, then lateraled to a teammate, the yardage gained/lost by the teammate would be recorded with this stat.
+58	Own Recovery Yards, TD, No Recovery	Same as previous, except when the play results in a touchdown.
+59	Opponent Recovery Yards	Yardage gained/lost by a player after he recovered a fumble by the opposing team.
+60	Opponent Recovery Yards, TD	Same as previous, except when the play results in a touchdown.
+61	Opponent Recovery Yards, No Recovery	If a player recovered a fumble by the opposing team, then lateraled to a teammate, the yardage gained/lost by the teammate would be recorded with this stat.
+62	Opponent Recovery Yards, TD, No Recovery	Same as previous, except when the play results in a touchdown.
+63	Miscellaneous Yards	This is sort of a catch-all for yardage that doesn't fall into any other category.  According to Elias, It does not include loose ball  yardage.  Examples are yardage on missed field goal, blocked punt.  This stat is not used to "balance the books."  No such accounting occurs.
+64	Miscellaneous Yards, TD	Same as previous, except when the play results in a touchdown.
+68	Timeout	Team took a time out.
+69	Field Goal Missed Yards	The length of a missed field goal.
+70	Field Goal Yards	The length of a successful field goal.
+71	Field Goal Blocked (Offense)	The length of an attempted field goal that was blocked.
+Unlike a Punt, a field goal is STATISTICALLY blocked even if the ball does go beyond the line of scrimmage.
+72	Extra Point - Good	Extra Point Good.  SuperStat uses one code for both successful and unsuccessful extra points.  I think it might be better to use 2 codes.
+73	Extra Point - Failed	Extra Point Failed
+74	Extra Point - Blocked	Extra Point Blocked.  Exclusive of the extra point failed stat.
+75	2 Point Rush - Good	Extra Points By Run Good (old version has 0/1 in yards for failed/good)
+76	2 Point Rush - Failed
+77	2 Point Pass - Good	Extra Points By Pass Good (old version has 0/1 in yards for failed/good)
+78	2 Point Pass - Failed	Extra Point By Pass Failed
+79	Solo Tackle	Tackle with no assists.
+Note: There are no official defensive statistics except for sacks.
+80	Assisted Tackle	Tackle with one or more assists.
+81	1/2 Tackle	Tackle split equally between two players.
+NOT IN USE.  This was a SuperStat "future."
+82	Tackle Assist	Assist to a tackle.
+83	Sack Yards (Defense)	Unassisted Sack.
+84	1/2 Sack Yards (Defense)	Sack split equally between two players.
+ELIAS WILL GRANT 1/3 SACKS, AND WILL NOT PLACE ANY LIMIT ON THE NUMBER OF PLAYERS AMONG WHOM IT WILL DIVIDE A SACK.  HOW TO HANDLE???
+85	Pass Defensed	Incomplete pass was due primarily to the players action.
+86	Punt Blocked (Defense)	Player blocked a punt.
+87	Extra Point Blocked (Defense)	Player blocked the extra point.
+88	Field Goal Blocked (Defense)
+89	Safety (Defense)	Tackle that resulted in a safety.  This is in addition to a tackle (code 5001).
+90	1/2 Safety (Defense)	This stat was used by SuperStat when a 1/2 Tackle resulted in a safety.  This was in addition to a 1/2 tackle code.
+However, Elias has never granted 1/2 safeties.  Either a full safety is granted to a single player, or the team gets the safety.
+When presented with this fact, Mike Francis agreed that this stat should be dropped.
+GSIS WILL NOT USE THIS STAT.
+91	Forced Fumble (Defense)	Player forced a fumble.
+93	Penalty
+95	Tackled for a Loss	Tackled for a Loss (TFL) is an OFFENSIVE stat.
+A team is charged with a TFL if its rush ends behind the line of scrimmage, and at least one defensive player is credited with ending the rush with a tackle, or tackle assist.  The stat will contain yardage equal to the (negative) distance from the line of scrimmage.
+96	Extra Point - Safety	If there is a fumble on an extra point attempt, and the loose ball goes into the endzone from impetus provided by the defensive team, and becomes dead in the endzone, the offense is awarded 1 point.
+99	2 Point Rush - Safety	See Extra Point by Safety.
+100	2 Point Pass - Safety	See Extra Point by Safety.
+102	Kickoff - Kick Downed	SuperStat didn't have this code.
+A kickoff is "downed" when touched by an offensive player within the 10 yard free zone, and the ball is awarded to the receivers at the sopt of the touch.
+103	Sack Yards (Offense), No Sack	This stat will be used when the Passer fumbles, then recovers, then laterals.  The receiver of the lateral gets sack yardage but no sack.
+104	2 Point Pass Reception - Good
+105	2 Point Pass Reception - Failed
+106	Fumble - Lost
+107	Own Kickoff Recovery	Direct recovery of own kickoff, whether or not the kickoff is onside.
+108	Own Kickoff Recovery, TD	Direct recovery in end zone of own kickoff, whether or not the kickoff is onside.
+110	Quarterback Hit	Player knocked the quarterback to the ground, quarterback was not the ball carrier.
+111	Pass Length, Completion	Length of the pass, not including the yards gained by the receiver after the catch. Unofficial stat.
+112	Pass Length, No Completion	Length of the pass if it would have been a completion. Unofficial stat.
+113	Yardage Gained After the Catch	Yardage from where the ball was caught until the player's action was over. Unofficial stat.
+115	Pass Target	Player was the target of a pass attempt.
+120	Tackle for a Loss	Player tackled the runner behind the line of scrimmage. Play must have ended, player must have received a tackle stat, has to be an offensive player tackled.
+201	Long Field Goal Yards	(NFL Europe) The length of a successful LONG field goal.
+211	Extra Point - Deuce	(NFL Europe) 2 points scored by defense on extra point(s) attempt.
+212	2 Point Rush - Deuce	(NFL Europe) See Extra Point - Deuce.
+213	2 Point Pass - Deuce	(NFL Europe) See Extra Point - Deuce.
+301	Extra Point - Aborted
+401	1/2 Tackle for a Loss	(NCAA) Player split credit for a tackle for a loss with another player.
+402	Tackle for a Loss Yardage	Yardage from line of scrimmage to where TFL was earned. Note: NCAA TFLs differ from NFL TFLs, not necessarily the yardage lost by the offense.
+403	Defensive Two Point Attempts	Defender intercepted or recovered an offensive fumble or (NFL only, recovered a blocked kick) during a two point conversion try.
+404	Defensive Two Point Conversions	Defender intercepted or recovered an offensive fumble or (NFL only, recovered a blocked kick) during a two point conversion try and returned the ball for two defensive extra points.
+405	Defensive Extra Point Attempts	(NCAA) Defender recovered a blocked extra point try.
+406	Defensive Extra Point Conversions	(NCAA) Defender recovered a blocked extra point try and returned the ball for two defensive extra points.
+410	Kickoff Length	Kickoff and length of kick. Includes end zone yards for all kicks into the end zone, including kickoffs ending in a touchback.
+420	2 Point Return - Good	Defensive fumble recovered or pass intercepted by kicking team and returned for two points for the kicking team.	
