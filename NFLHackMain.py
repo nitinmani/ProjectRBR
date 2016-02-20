@@ -49,10 +49,10 @@ def make_rb_dict():
             for stat_getter in play["play"]["playStats"]:
                 for key in stat_getter:
                     if key == "nflId":
-                        if stat_getter[key] == running_back:
-                            if running_back not in rb_dict:
-                                rb_dict[running_back] = []
-                            rb_dict[running_back].append((play["gameId"], play["ngsPlayId"]))
+                        if stat_getter[key] == running_back[0]:
+                            if running_back[0] not in rb_dict:
+                                rb_dict[running_back[0]] = []
+                            rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"]))
 
 
 make_rb_dict()
