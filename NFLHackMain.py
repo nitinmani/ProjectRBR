@@ -19,15 +19,18 @@ from pprint import pprint
 # statID = [52, 53, 54, 55, 57, 59, 61, 91, 96, 103, 106, 403, 404, 420] #All ID's that correspond to fumbles
 game1Plays ='./data/Game1/game1plays'
 teamPlays ='./data/Game1/TeamRosters'
-runningBacksList = []
+positionIds = ["OT", "RB", "OL"] #SelfReference
 
 """For team json file in TeamRoster, retrieves all RunningBack ID's"""
-def getAllRunningBacks():
+def getPlayers(position):
+    allPlayers  = []
     teamInformationDict = NFLFileLogistics.getJSONFiles(teamPlays)
     for fileName in teamInformationDict:
         roster = NFLFileLogistics.loadTeamJSONFile(fileName) 
         for player in roster["teamPlayers"]:
-            if player["positionGroup"] == "RB":
-                runningBacksList.append(player["nflId"])
-    print runningBacksList
-getAllRunningBacks()
+            if player["positionGroup"] == position or player["position"] == position:
+                allPlayers.append(player["nflId"])
+    print(allPlayers)
+getPlayers("OT")
+getPlayers("RB")
+getPlayers("OL")
