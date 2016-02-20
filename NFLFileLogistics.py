@@ -9,7 +9,6 @@ def getGame1JSONFiles(Directory):
         for fileName in files:
             fullPath = os.path.join(root, fileName)
             fileInformation[fileName] = fullPath
-getGame1JSONFiles(game1Plays);
 
 """Loads JSONFile To Work With. Example fileName = 180.json"""
 def loadJSONFile(fileName):
