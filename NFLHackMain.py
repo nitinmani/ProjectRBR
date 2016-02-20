@@ -20,6 +20,7 @@ import NFLFileLogistics
 game1Plays ='./data/Game1/game1plays'
 teamPlays ='./data/Game1/TeamRosters'
 positionIds = ["OT", "RB", "OL"] #SelfReference
+rb_dict = {}
 rb_list = []
 ot_list = []
 ol_list = []
@@ -40,16 +41,23 @@ def getPlayers():
                 ol_list.append(player["nflId"])
 getPlayers()
 
-def make_running_back_list():
-	playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
-	for playFile in playInfoDict:
-		play = NFLFileLogistics.loadJSONFile(playFile)
-		for running_back in rb_list:
-			for stat_getter in play["play"]["playStats"]:
-				print stat_getter["u' statID"]
+def make_rb_dict():
+    playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
+    for play_file in playInfoDict:
+        play = NFLFileLogistics.loadJSONFile(play_file)
+        for running_back in rb_list:
+            for stat_getter in play["play"]["playStats"]:
+                for key in stat_getter:
+                    if key == "nflId":
+                        if stat_getter[key] == running_back:
+                            if running_back not in rb_dict:
+                                rb_dict[running_back] = []
+                            rb_dict[running_back].append((play["gameId"], play["ngsPlayId"]))
 
-make_running_back_list()
-				
+
+make_rb_dict()
+print (len(rb_dict))
+print (rb_dict)
 
 
 #def calculateShortYardage(RB_ID):
