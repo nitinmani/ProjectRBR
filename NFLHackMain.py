@@ -34,11 +34,11 @@ def getPlayers():
         roster = NFLFileLogistics.loadTeamJSONFile(fileName) 
         for player in roster["teamPlayers"]:
             if player["positionGroup"] == "RB":
-                rb_list.append(player["nflId"])
+                rb_list.append((player["nflId"], roster["team"]["abbr"]))
             if player["position"] == "OT":
-                ot_list.append(player["nflId"])
+                ot_list.append((player["nflId"], roster["team"]["abbr"]))
             if player["positionGroup"] == "OL":
-                ol_list.append(player["nflId"])
+                ol_list.append((player["nflId"], roster["team"]["abbr"]))
 getPlayers()
 
 def make_rb_dict():
@@ -56,8 +56,7 @@ def make_rb_dict():
 
 
 make_rb_dict()
-print (len(rb_dict))
-print (rb_dict)
+
 
 
 #def calculateShortYardage(RB_ID):
