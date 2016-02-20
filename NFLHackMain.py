@@ -20,23 +20,29 @@ from pprint import pprint
 game1Plays ='./data/Game1/game1plays'
 teamPlays ='./data/Game1/TeamRosters'
 positionIds = ["OT", "RB", "OL"] #SelfReference
-runningPlays = [] #Depends on Nitin's code
+rb_list = []
+ot_list = []
+ol_list = []
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
-def getPlayers(position):
-    allPlayers  = []
+def getPlayers():
     teamInformationDict = NFLFileLogistics.getJSONFiles(teamPlays)
     for fileName in teamInformationDict:
         roster = NFLFileLogistics.loadTeamJSONFile(fileName) 
         for player in roster["teamPlayers"]:
-            if player["positionGroup"] == position or player["position"] == position:
-                allPlayers.append(player["nflId"])
-    return allPlayers
+            if player["positionGroup"] == "RB":
+                rb_list.append(player["nflId"])
+            if player["position"] == "OT":
+                ot_list.append(player["nflId"])
+            if player["positionGroup"] == "OL":
+                ol_list.append(player["nflId"])
 
-def calculateShortYardage(RB_ID):
-    RBPlayerIDs = getPlayers("RB")
-    #May have to make a call to Nitin's method for runningPlays
-    for playID in runningPlays:
+
+
+#def calculateShortYardage(RB_ID):
+#    RBPlayerIDs = getPlayers("RB")
+#    #May have to make a call to Nitin's method for runningPlays
+#    for playID in runningPlays:
         
 
 
