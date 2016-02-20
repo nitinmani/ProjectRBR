@@ -8,7 +8,7 @@ def getJSONFiles(Directory):
         for fileName in files:
             fullPath = os.path.join(root, fileName)
             fileInformation[fileName] = fullPath
-    print fileInformation
+    return fileInformation
 
 """Loads a Game1Play JSONFile To Work With. Example fileName = 180.json"""
 def loadJSONFile(fileName):
@@ -17,7 +17,7 @@ def loadJSONFile(fileName):
         return JSONContents
 
 """Loads a TeamRoster JSONFile To Work With. Example fileName = team1.json"""
-def loadTeamJSONFIle(fileName):
+def loadTeamJSONFile(fileName):
     with open("data/Game1/TeamRosters/" + fileName) as data_file:    
         JSONTeamContents = json.load(data_file)
         return JSONTeamContents  
