@@ -1,18 +1,18 @@
-import scipy
-import numpy as np
-import matplotlib.cm as cm
-import matplotlib.pyplot as plt
-import pylab as pl
-import sklearn
+# import scipy
+# import numpy as np
+# import matplotlib.cm as cm
+# import matplotlib.pyplot as plt
+# import pylab as pl
+# import sklearn
 import csv
 import json
 import os
 import NFLFileLogistics
-from sklearn import svm
-from sklearn.svm import SVC
-from scipy import io
-from sklearn import linear_model
-from pprint import pprint
+# from sklearn import svm
+# from sklearn.svm import SVC
+# from scipy import io
+# from sklearn import linear_model
+# from pprint import pprint
 
 
 # """Generate a list of JSON Files that contain StatID's that correspond to fumbles"""
@@ -24,6 +24,8 @@ rb_list = []
 ot_list = []
 ol_list = []
 
+
+running_back_play_dict = {}
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
 def getPlayers():
     teamInformationDict = NFLFileLogistics.getJSONFiles(teamPlays)
@@ -36,7 +38,18 @@ def getPlayers():
                 ot_list.append(player["nflId"])
             if player["positionGroup"] == "OL":
                 ol_list.append(player["nflId"])
+getPlayers()
 
+def make_running_back_list():
+	playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
+	for playFile in playInfoDict:
+		play = NFLFileLogistics.loadJSONFile(playFile)
+		for running_back in rb_list:
+			for stat_getter in play["play"]["playStats"]:
+				print stat_getter["u' statID"]
+
+make_running_back_list()
+				
 
 
 #def calculateShortYardage(RB_ID):
