@@ -37,7 +37,6 @@ outsideRBRatio = {}
 speedRBRatio = {}
 leagueAverages = {}
 
-
 playermetricRatios = {}
 playerMetricScores = {}
 
@@ -644,7 +643,7 @@ class Radar(object):
 
 # labels = [
 #     list("abcde"), list("12345"), list("uvwxy"), 
-#     ["one", "two", "three", "four", "five"],
+#     ["one"py, "two", "three", "four", "five"],
 #     list("jklmn")
 # ]
 
@@ -662,9 +661,12 @@ labels = [
     ['','5','10','15','']
 ]
 
+
 colors = ["r" , "b" , "g", "y", "k"]
 radar = Radar(fig, titles, labels)
 color_num = 0
+
+#==check = CheckButtons(None, ('2 Hz', '4 Hz', '6 Hz'), (False, True, True))
 
 for rb in rb_list:
     scores = []
