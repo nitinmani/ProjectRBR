@@ -31,6 +31,8 @@ insideRBRatio = {}
 outsideRBRatio = {}
 speedRBRatio = {}
 
+leagueAverages = {}
+
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
 def getPlayers():
@@ -60,6 +62,8 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+
+    # print rb_dict
     #importing 2nd and 3rd game's running back plays                                
     playInfoDict = NFLFileLogistics.getJSONFiles(game2Plays)
     for play_file2 in playInfoDict:
@@ -75,6 +79,9 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
+
+        # print rb_dict
+
     playInfoDict = NFLFileLogistics.getJSONFiles(game3Plays)
     for play_file3 in playInfoDict:
         play = NFLFileLogistics.loadJSONFile3(play_file3)
@@ -90,7 +97,7 @@ def make_rb_dict():
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
 
-# print rb_dict
+        # print rb_dict
 
 # print "   "
         
@@ -392,6 +399,59 @@ def calculatePassCatching(runningPlayDict):
         else:
             rbIDMetricStorage[rbID] = [("Pass Catching Metric", calculatedTuple)]
 
+# print "Printing the metric storage\n"
+# print rbIDMetricStorage
+
+def setLeagueAverages():
+    #leagueAverages
+
+    # {2552483: [('Pass Catching Metric', (1.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 4.2), ('Outside Run Metric', 5.698275862068965), ('Speed Run Metric', 6.688)], 
+    # 2552388: [('Pass Catching Metric', (0.0, 0.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 2.5), ('Outside Run Metric', 2.671875), ('Speed Run Metric', 0)], 2495173: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 1.3333333333333333), ('Outside Run Metric', 1.5121951219512195), ('Speed Run Metric', 0)], 2539272: [('Pass Catching Metric', (6.0, 0.5)), ('Short Yardage Metric', (0.0, 0.3333333333333333)), ('Inside Run Metric', 1.4), ('Outside Run Metric', 6.007246376811594), ('Speed Run Metric', 7.45)], 2553129: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2552394: [('Pass Catching Metric', (-2.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 6.333333333333333), ('Outside Run Metric', 6.333333333333333), ('Speed Run Metric', 6.38)], 2553451: [('Pass Catching Metric', (5.0, 0.6666666666666666)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 5.545454545454546), ('Outside Run Metric', 3.7914438502673797), ('Speed Run Metric', 6.395)], 2532876: [('Pass Catching Metric', (2.5, 1.0)), ('Short Yardage Metric', (3.5, 0.5)), ('Inside Run Metric', 1.0), ('Outside Run Metric', 4.046153846153846), ('Speed Run Metric', 4.525)], 2530702: [('Pass Catching Metric', (7.166666666666667, 0.6666666666666666)), ('Short Yardage Metric', (16.666666666666668, 0.6666666666666666)), ('Inside Run Metric', 2.5555555555555554), ('Outside Run Metric', 6.3803921568627455), ('Speed Run Metric', 6.8675)], 2506416: [('Pass Catching Metric', (-0.2, 0.2)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 4.461538461538462), ('Outside Run Metric', 4.0504731861198735), ('Speed Run Metric', 5.7025)], 2550419: [('Pass Catching Metric', (10.0, 0.8)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 7.0), ('Outside Run Metric', 7.0), ('Speed Run Metric', 5.92)], 2541556: [('Pass Catching Metric', (11.333333333333334, 1.0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 0.3333333333333333), ('Outside Run Metric', 14.301587301587302), ('Speed Run Metric', 10.78)], 2541173: [('Pass Catching Metric', (7.666666666666667, 0.3333333333333333)), ('Short Yardage Metric', (6.0, 1.0)), ('Inside Run Metric', 3.68), ('Outside Run Metric', 3.665768194070081), ('Speed Run Metric', 5.905714285714287)], 2550486: [('Pass Catching Metric', (7.0, 0.5)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 3.3636363636363638), ('Outside Run Metric', 3.2966507177033493), ('Speed Run Metric', 6.623333333333334)], 2536056: [('Pass Catching Metric', (0.0, 0.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 8.0), ('Outside Run Metric', 8.536585365853659), ('Speed Run Metric', 5.585)], 2495326: [('Pass Catching Metric', (0.6666666666666666, 0.6666666666666666)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2543514: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (-1.0, 0.0)), ('Inside Run Metric', 2.9375), ('Outside Run Metric', 3.3535031847133756), ('Speed Run Metric', 5.515000000000001)], 2552476: [('Pass Catching Metric', (1.0, 1.0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 1.0), ('Outside Run Metric', 1.0), ('Speed Run Metric', 0)], 4445: [('Pass Catching Metric', (7.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2531230: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)]}
+
+
+    passCatchingYPC = 0.0
+    passCatchingCompletionRatio = 0.0
+    shortYardageYPC = 0.0
+    shortYardageSuccessRatio = 0.0
+    insideRunYPC = 0.0
+    outsideRunYPC = 0.0
+    averageMaxSpeed = 0.0
+
+
+    for metricArray in rbIDMetricStorage.values():
+        passCatchingYPC += metricArray[0][1][0]
+        passCatchingCompletionRatio += metricArray[0][1][1]
+        shortYardageYPC += metricArray[1][1][0]
+        shortYardageSuccessRatio += metricArray[1][1][1]
+        insideRunYPC += metricArray[2][1]
+        outsideRunYPC += metricArray[3][1]
+        averageMaxSpeed += metricArray[4][1]
+
+    
+
+    numberPlayers =  len(rbIDMetricStorage)
+
+    passCatchingYPC /= numberPlayers
+    passCatchingCompletionRatio /= numberPlayers
+    shortYardageYPC /= numberPlayers
+    shortYardageSuccessRatio /= numberPlayers
+    insideRunYPC /= numberPlayers
+    outsideRunYPC /= numberPlayers
+    averageMaxSpeed /= numberPlayers
+
+    leagueAverages["passCatchingYPC"] =  passCatchingYPC
+    leagueAverages["passCatchingCompletionRatio"] =passCatchingCompletionRatio
+    leagueAverages["shortYardageYPC"] = shortYardageYPC
+    leagueAverages["shortYardageSuccessRatio"] = shortYardageSuccessRatio
+    leagueAverages["insideRunYPC"] = insideRunYPC
+    leagueAverages["outsideRunYPC"] = outsideRunYPC
+    leagueAverages["averageMaxSpeed"] =averageMaxSpeed
+
+
+
+
+
+
 getPlayers()
 make_rb_dict()
 #print rb_dict
@@ -405,11 +465,7 @@ calculateOutsideRun(rb_dict)
 #print("Done with outer")
 speed(rb_dict)
 #print speedRBRatio
-print rb_dict
-
-
-
-
+# print rb_dict
 for ID in insideRBRatio:
     if ID in rbIDMetricStorage:
         rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
@@ -431,8 +487,23 @@ for ID in speedRBRatio:
         rbIDMetricStorage[ID] = []
         rbIDMetricStorage[ID].append(("Speed Run Metric", speedRBRatio[ID]))
 
-print "Printing the metric storage\n"
-print rbIDMetricStorage
+setLeagueAverages()
+
+print leagueAverages
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     
 
