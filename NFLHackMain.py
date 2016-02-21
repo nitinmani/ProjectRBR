@@ -25,6 +25,7 @@ rbIDMetricStorage = {}
 runningBackRatios = {}
 insideRBRatio = {}
 outsideRBRatio = {}
+speedRBRatio = {}
 
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
@@ -62,125 +63,165 @@ def make_rb_dict():
 # print "   "
         
 def calculateInsideRun(rb_play_dict):
-	for rbID in rb_play_dict:
-		total_inside_plays = 0
-		total_inside_yards = 0
-		for ngsGameandPlayID in rb_play_dict[rbID]:
-		    if (ngsGameandPlayID[0] == 1): #Check Game
-		        ngsPlayID_string = str(ngsGameandPlayID[1])
-		        tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
-	                if tempFile["play"]["playType"] == "play_type_rush":
-		                offensive_tackles_loc = offensive_tackles_y(tempFile)
-		                line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
-		                play_stats = tempFile["play"]["playStats"]
-		                for play_stat in play_stats:
-		                	if "nflId" in play_stat:
-		                		if play_stat["nflId"] == rbID:
-	                				for trackingData in tempFile["homeTrackingData"]:
-			                			if play_stat["yards"] < 0:
-		                					if "event" in trackingData:
-		                						if trackingData["event"] == "playStopped":
-			                						if trackingData["playerTrackingData"]["y"] >= offensive_tackles_loc[0] and trackingData["playerTrackingData"]["y"] <= offensive_tackles_loc[1]:
-			                							total_inside_plays += 1 
-			                							total_inside_yards += play_stat["yards"]
-			                			else:
-			                				y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
-			                				if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
-	                							total_inside_plays += 1 
-	                							total_inside_yards += play_stat["yards"]
-	                				for trackingData in tempFile["awayTrackingData"]:
-			                			if play_stat["yards"] < 0:
-		                					if "event" in trackingData:
-		                						if trackingData["playerTrackingData"]["event"] == "playStopped":
-			                						if trackingData["playerTrackingData"]["y"] >= offensive_tackles_loc[0] and trackingData["playerTrackingData"]["y"] <= offensive_tackles_loc[1]:
-			                							total_inside_plays += 1 
-			                							total_inside_yards += play_stat["yards"]
-			                			else:
-			                				y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
-			                				if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
-	                							total_inside_plays += 1 
-	                							total_inside_yards += play_stat["yards"]
-		if total_inside_plays == 0:
-		 	insideRBRatio[rbID] = 0
-		else:
-			insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
+    for rbID in rb_play_dict:
+        total_inside_plays = 0
+        total_inside_yards = 0
+        for ngsGameandPlayID in rb_play_dict[rbID]:
+            if (ngsGameandPlayID[0] == 1): #Check Game
+                ngsPlayID_string = str(ngsGameandPlayID[1])
+                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                if tempFile["play"]["playType"] == "play_type_rush":
+                    offensive_tackles_loc = offensive_tackles_y(tempFile)
+                    line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
+                    play_stats = tempFile["play"]["playStats"]
+                    for play_stat in play_stats:
+                        if "nflId" in play_stat:
+                            if play_stat["nflId"] == rbID:
+                                for trackingData in tempFile["homeTrackingData"]:
+                                    if play_stat["yards"] < 0:
+                                        if "event" in trackingData:
+                                            if trackingData["event"] == "playStopped":
+                                                if trackingData["playerTrackingData"]["y"] >= offensive_tackles_loc[0] and trackingData["playerTrackingData"]["y"] <= offensive_tackles_loc[1]:
+                                                    total_inside_plays += 1 
+                                                    total_inside_yards += play_stat["yards"]
+                                    else:
+                                        y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
+                                        if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
+                                            total_inside_plays += 1 
+                                            total_inside_yards += play_stat["yards"]
+                                for trackingData in tempFile["awayTrackingData"]:
+                                    if play_stat["yards"] < 0:
+                                        if "event" in trackingData:
+                                            if trackingData["playerTrackingData"]["event"] == "playStopped":
+                                                if trackingData["playerTrackingData"]["y"] >= offensive_tackles_loc[0] and trackingData["playerTrackingData"]["y"] <= offensive_tackles_loc[1]:
+                                                    total_inside_plays += 1 
+                                                    total_inside_yards += play_stat["yards"]
+                                    else:
+                                        y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
+                                        if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
+                                            total_inside_plays += 1 
+                                            total_inside_yards += play_stat["yards"]
+        if total_inside_plays == 0:
+            insideRBRatio[rbID] = 0
+        else:
+            insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
 
 def calculateOutsideRun(rb_play_dict):
-	for rbID in rb_play_dict:
-		total_outside_plays = 0
-		total_outside_yards = 0
-		for ngsGameandPlayID in rb_play_dict[rbID]:
-		    if (ngsGameandPlayID[0] == 1): #Check Game
-		        ngsPlayID_string = str(ngsGameandPlayID[1])
-		        tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
-	                if tempFile["play"]["playType"] == "play_type_rush":
-		                offensive_tackles_loc = offensive_tackles_y(tempFile)
-		                line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
-		                play_stats = tempFile["play"]["playStats"]
-		                for play_stat in play_stats:
-		                	if "nflId" in play_stat:
-		                		if play_stat["nflId"] == rbID:
-	                				for trackingData in tempFile["homeTrackingData"]:
-			                			if play_stat["yards"] < 0:
-		                					if "event" in trackingData:
-		                						if trackingData["event"] == "playStopped":
-			                						if trackingData["playerTrackingData"]["y"] < offensive_tackles_loc[0] or trackingData["playerTrackingData"]["y"] > offensive_tackles_loc[1]:
-			                							total_outside_plays += 1 
-			                							total_outside_yards += play_stat["yards"]
-			                			else:
-			                				y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
-			                				if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
-	                							total_outside_plays += 1 
-	                							total_outside_yards += play_stat["yards"]
-	                				for trackingData in tempFile["awayTrackingData"]:
-			                			if play_stat["yards"] < 0:
-		                					if "event" in trackingData:
-		                						if trackingData["playerTrackingData"]["event"] == "playStopped":
-			                						if trackingData["playerTrackingData"]["y"] < offensive_tackles_loc[0] or trackingData["playerTrackingData"]["y"] > offensive_tackles_loc[1]:
-			                							total_outside_plays += 1 
-			                							total_outside_yards += play_stat["yards"]
-			                			else:
-			                				y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
-			                				if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
-	                							total_outside_plays += 1 
-	                							total_outside_yards += play_stat["yards"]
-		if total_outside_plays == 0:
-			outsideRBRatio[rbID] = 0
-		else:
-			outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+    for rbID in rb_play_dict:
+        total_outside_plays = 0
+        total_outside_yards = 0
+        for ngsGameandPlayID in rb_play_dict[rbID]:
+            if (ngsGameandPlayID[0] == 1): #Check Game
+                ngsPlayID_string = str(ngsGameandPlayID[1])
+                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                if tempFile["play"]["playType"] == "play_type_rush":
+                    offensive_tackles_loc = offensive_tackles_y(tempFile)
+                    line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
+                    play_stats = tempFile["play"]["playStats"]
+                    for play_stat in play_stats:
+                        if "nflId" in play_stat:
+                            if play_stat["nflId"] == rbID:
+                                for trackingData in tempFile["homeTrackingData"]:
+                                    if play_stat["yards"] < 0:
+                                        if "event" in trackingData:
+                                            if trackingData["event"] == "playStopped":
+                                                if trackingData["playerTrackingData"]["y"] < offensive_tackles_loc[0] or trackingData["playerTrackingData"]["y"] > offensive_tackles_loc[1]:
+                                                    total_outside_plays += 1 
+                                                    total_outside_yards += play_stat["yards"]
+                                    else:
+                                        y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
+                                        if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
+                                            total_outside_plays += 1 
+                                            total_outside_yards += play_stat["yards"]
+                                for trackingData in tempFile["awayTrackingData"]:
+                                    if play_stat["yards"] < 0:
+                                        if "event" in trackingData:
+                                            if trackingData["playerTrackingData"]["event"] == "playStopped":
+                                                if trackingData["playerTrackingData"]["y"] < offensive_tackles_loc[0] or trackingData["playerTrackingData"]["y"] > offensive_tackles_loc[1]:
+                                                    total_outside_plays += 1 
+                                                    total_outside_yards += play_stat["yards"]
+                                    else:
+                                        y_loc = min_and_max(trackingData, rbID, line_of_scrimmage)
+                                        if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
+                                            total_outside_plays += 1 
+                                            total_outside_yards += play_stat["yards"]
+        if total_outside_plays == 0:
+            outsideRBRatio[rbID] = 0
+        else:
+            outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+
+def speed(runningPlayDict):
+    for rbID in runningPlayDict:
+        speed_array = []
+        for ngsGameandPlayID in runningPlayDict[rbID]:
+            max_speed = 0
+            if (ngsGameandPlayID[0] == 1): #Check Game
+                ngsPlayID_string = str(ngsGameandPlayID[1])
+                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                if tempFile["play"]["playType"] == "play_type_rush":
+                    for playStat in tempFile["play"]["playStats"]:
+                        if "nflId" in playStat:
+                            if playStat["nflId"] == rbID:
+                                
+                                    
+                # if tempFile["play"]["playStats"][0]["yards"] < 5: 
+                #     print("RB " + str(rbID) + " did not run enough")
+                #     continue
+                                if (playStat["statId"] == 10 or playStat["statId"] == 11) and playStat["yards"] >= 5:
+                                    
+                                    for tracking_data in tempFile["homeTrackingData"]:
+                                        if tracking_data["nflId"] == rbID:
+                                            for player_data in tracking_data["playerTrackingData"]:
+                                                max_speed = max(max_speed, player_data["s"])
+                                            speed_array.append(max_speed)
+                                    for tracking_data in tempFile["awayTrackingData"]:
+                                        if tracking_data["nflId"] == rbID:
+                                            for player_data in tracking_data["playerTrackingData"]:
+                                                max_speed = max(max_speed, player_data["s"])
+                                            speed_array.append(max_speed)
+        avg_speed = 0
+        if len(speed_array) != 0:
+            for speed in speed_array:
+               avg_speed += speed
+            avg_speed = avg_speed*1.0 /(len(speed_array))*1.0
+            if rbID not in speedRBRatio:
+                speedRBRatio[rbID] = avg_speed
+        else:
+            speedRBRatio[rbID] = 0
+
 
 #Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
 def offensive_tackles_y(play):
-	max_y = 0
-	min_y = 10000000000000000000
+    max_y = 0
+    min_y = 10000000000000000000
 
-	for lineman in ol_list:
-		for playerH in play["homeTrackingData"]:
-			if lineman[0] == playerH["nflId"]:
-				for player_data in playerH["playerTrackingData"]:
-					if "event" in player_data:
-						if player_data["event"] == "snap":
-							min_y = min(player_data["y"], min_y)
-							max_y = max(player_data["y"], max_y)
-		for playerA in play["awayTrackingData"]:
-			if lineman[0] == playerA["nflId"]:
-				for player_data in playerA["playerTrackingData"]:
-					if "event" in player_data:
-						if player_data["event"] == "snap":
-							min_y = min(player_data["y"], min_y)
-							max_y = max(player_data["y"], max_y)
-	return (min_y, max_y)
+    for lineman in ol_list:
+        for playerH in play["homeTrackingData"]:
+            if lineman[0] == playerH["nflId"]:
+                for player_data in playerH["playerTrackingData"]:
+                    if "event" in player_data:
+                        if player_data["event"] == "snap":
+                            min_y = min(player_data["y"], min_y)
+                            max_y = max(player_data["y"], max_y)
+        for playerA in play["awayTrackingData"]:
+            if lineman[0] == playerA["nflId"]:
+                for player_data in playerA["playerTrackingData"]:
+                    if "event" in player_data:
+                        if player_data["event"] == "snap":
+                            min_y = min(player_data["y"], min_y)
+                            max_y = max(player_data["y"], max_y)
+    return (min_y, max_y)
 
 
 #Two Cases from Here:
 
 
-def calculateShortYardage(runningPlayDict):
-    for rbID in runningPlayDict:
+def calculateShortYardage(rb_play_dict):
+    for rbID in rb_play_dict:
         totalSuccesses = 0
         totalEligiblePlays = 0
         yardsGained = 0.0
-        for ngsGameandPlayID in runningPlayDict[rbID]:
+        for ngsGameandPlayID in rb_play_dict[rbID]:
             if (ngsGameandPlayID[0] == 1): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
                 tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
@@ -221,21 +262,21 @@ def calculateShortYardage(runningPlayDict):
             rbIDMetricStorage[rbID] = [("Short Yardage Metric", calculatedTuple)]
 
 def min_and_max(trackingData, rbid, scrimmage):
-	max_x = 0
-	min_x = 1000
-	min_y = 1000
-	max_y = 0
-	for track in trackingData["playerTrackingData"]:
-			if scrimmage >= track["x"] and max_x < track["x"]:
-				max_x = track["x"]
-				max_y = track["y"]
-			if scrimmage <= track["x"] and min_x > track["x"]:
-				min_x = track["x"]
-				max_y = track["y"]
-	if max_x == min_x:
-		return (max_y + min_y)	/ 2
-	slope = (max_y - min_y)/(max_x - min_x)
-	return max_y - slope*(max_x - scrimmage)
+    max_x = 0
+    min_x = 1000
+    min_y = 1000
+    max_y = 0
+    for track in trackingData["playerTrackingData"]:
+            if scrimmage >= track["x"] and max_x < track["x"]:
+                max_x = track["x"]
+                max_y = track["y"]
+            if scrimmage <= track["x"] and min_x > track["x"]:
+                min_x = track["x"]
+                max_y = track["y"]
+    if max_x == min_x:
+        return (max_y + min_y)  / 2
+    slope = (max_y - min_y)/(max_x - min_x)
+    return max_y - slope*(max_x - scrimmage)
 
 
 # calculateShortYardage(rb_dict)
@@ -260,7 +301,7 @@ def calculatePassCatching(runningPlayDict):
                 if (tempFile["play"]["playType"] == "play_type_pass"):
                     #print "Pass Play"
                     # print "exists"
-                    totalEligiblePlays+=1
+                    totalEligiblePlays += 1
                     for playStat in tempFile["play"]["playStats"]:
                         if "nflId" in playStat:
                             if playStat["nflId"] == rbID:
@@ -283,32 +324,43 @@ def calculatePassCatching(runningPlayDict):
         else:
             rbIDMetricStorage[rbID] = [("Pass Catching Metric", calculatedTuple)]
 
-
 getPlayers()
 make_rb_dict()
 calculatePassCatching(rb_dict)
 calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
-print insideRBRatio
-print("Done with inner")
+#print insideRBRatio
+#print("Done with inner")
 calculateOutsideRun(rb_dict)
-print outsideRBRatio
-print("Done with outer")
+#print outsideRBRatio
+#print("Done with outer")
+speed(rb_dict)
+#print speedRBRatio
+#print rb_dict
 
 for ID in insideRBRatio:
-	if ID in rbIDMetricStorage:
-		rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
-	else:
-		rbIDMetricStorage[ID] = []
-		rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
+    if ID in rbIDMetricStorage:
+        rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
+    else:
+        rbIDMetricStorage[ID] = []
+        rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
 
 for ID in outsideRBRatio:
-	if ID in rbIDMetricStorage:
-		rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
-	else:
-		rbIDMetricStorage[ID] = []
-		rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
+    if ID in rbIDMetricStorage:
+        rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
+    else:
+        rbIDMetricStorage[ID] = []
+        rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
+
+for ID in speedRBRatio:
+    if ID in rbIDMetricStorage:
+        rbIDMetricStorage[ID].append(("Speed Run Metric", speedRBRatio[ID]))
+    else:
+        rbIDMetricStorage[ID] = []
+        rbIDMetricStorage[ID].append(("Speed Run Metric", speedRBRatio[ID]))
+
 
 print rbIDMetricStorage
+
                     
 
