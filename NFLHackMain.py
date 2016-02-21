@@ -1,5 +1,5 @@
-# import scipy
-# import numpy as np
+import scipy
+import numpy as np
 # import matplotlib.cm as cm
 # import matplotlib.pyplot as plt
 # import pylab as pl
@@ -10,7 +10,7 @@ import os
 import NFLFileLogistics
 # from sklearn import svm
 # from sklearn.svm import SVC
-# from scipy import io
+from scipy import stats
 # from sklearn import linear_model
 # from pprint import pprint
 
@@ -21,6 +21,8 @@ game2Plays ='./data/Game1/game2plays'
 game3Plays = './data/Game1/game3plays'
 
 positionIds = ["OT", "RB", "OL"] #SelfReference
+
+metrics = ["outside" , "inside", "speed", "passCatching", "shortYardage"]
 rb_dict = {}
 rb_list = []
 ot_list = []
@@ -33,7 +35,9 @@ speedRBRatio = {}
 leagueAverages = {}
 
 
-playermetricScores = {}
+playermetricRatios = {}
+playerMetricScores = {}
+
 
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
@@ -452,13 +456,15 @@ def setLeagueAverages():
 def calcRBOutsideYardage():
 
     for rbID in rbIDMetricStorage.keys():
-        playermetricScores[rbID] = []
+        playermetricRatios[rbID] = []
 
         finalResult = rbIDMetricStorage[rbID][3][1] / leagueAverages["outsideRunYPC"]
 
-        playermetricScores[rbID].append(("outsideRatio", finalResult))
+        playermetricRatios[rbID].append(("outsideRatio", finalResult))
 
     calcRBInsideYardage()
+
+
 
 def calcRBInsideYardage():
 
@@ -466,7 +472,7 @@ def calcRBInsideYardage():
 
         finalResult = rbIDMetricStorage[rbID][2][1] / leagueAverages["insideRunYPC"]
 
-        playermetricScores[rbID].append(("insideRatio", finalResult))
+        playermetricRatios[rbID].append(("insideRatio", finalResult))
 
     calcRBopenFieldRunning()
 
@@ -476,7 +482,7 @@ def calcRBopenFieldRunning():
 
         finalResult = rbIDMetricStorage[rbID][4][1] / leagueAverages["averageMaxSpeed"]
 
-        playermetricScores[rbID].append(("speedRatio", finalResult))
+        playermetricRatios[rbID].append(("speedRatio", finalResult))
 
     calcRBpassCatching()
 
@@ -487,7 +493,7 @@ def calcRBpassCatching():
 		partYPC = rbIDMetricStorage[rbID][0][1][0] / leagueAverages["passCatchingYPC"]
 		partCompletionRatio = rbIDMetricStorage[rbID][0][1][1] / leagueAverages["passCatchingCompletionRatio"]
 		finalResult = partYPC + partCompletionRatio
-		playermetricScores[rbID].append(("passCatchingRatio", finalResult))
+		playermetricRatios[rbID].append(("passCatchingRatio", finalResult))
 
 	calcRBshortYardage()
 
@@ -500,7 +506,46 @@ def calcRBshortYardage():
         partCompletionRatio = rbIDMetricStorage[rbID][1][1][1] / leagueAverages["shortYardageSuccessRatio"]
         finalResult = partYPC + partCompletionRatio
 
-        playermetricScores[rbID].append(("shortYardageRatio", finalResult))
+        playermetricRatios[rbID].append(("shortYardageRatio", finalResult))
+
+def setScoresForEachMetric():
+
+	index = 0
+
+	while index < 5 :
+
+		rbIDs = []
+		tempArray = []
+
+		for rbId, listofMetricRatios in playermetricRatios.items():
+			rbIDs.append(rbId)
+			tempArray.append(listofMetricRatios[index][1])
+
+		a = np.array(tempArray)
+		zscores = stats.zscore(a)
+
+		# print("All running backs:")
+		# print rbIDs
+		for i in range(0, len(rbIDs)):
+			if index == 0:
+				playerMetricScores[rbIDs[i]] = []
+			# print "What it look lik " 
+			# print  playerMetricScores
+
+
+			zscore = zscores[i]
+			score = stats.norm.cdf(zscore) * 20
+			playerMetricScores[rbIDs[i]].append((metrics[index], score))
+
+		index+=1
+
+
+	print playerMetricScores
+
+
+
+
+
 
 
 """Basically where all the function calls are happening in the program"""
@@ -545,7 +590,10 @@ for ID in speedRBRatio:
 setLeagueAverages()
 calcRBOutsideYardage()
 
-print playermetricScores
+setScoresForEachMetric()
+
+
+# print playermetricRatios
 
 
 
