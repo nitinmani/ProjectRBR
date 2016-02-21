@@ -15,7 +15,11 @@ import NFLFileLogistics
 # from pprint import pprint
 
 game1Plays ='./data/Game1/game1plays'
-teamPlays ='./data/Game1/TeamRosters'
+teamPlays ='./data/Game1/TeamRosters' # changed this directory to have all 6 team's rosters
+#game 2 and 3 plays
+game2Plays ='./data/Game1/game2plays'
+game3Plays = './data/Game1/game3plays'
+
 positionIds = ["OT", "RB", "OL"] #SelfReference
 rb_dict = {}
 rb_list = []
@@ -44,7 +48,7 @@ def getPlayers():
 def make_rb_dict():
     playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
     for play_file in playInfoDict:
-        play = NFLFileLogistics.loadJSONFile(play_file)
+        play = NFLFileLogistics.loadJSONFile1(play_file)
         for running_back in rb_list:
             for stat_getter in play["play"]["playStats"]:
                 for key in stat_getter:
@@ -55,8 +59,36 @@ def make_rb_dict():
                                 rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
-                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
-
+                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+    #importing 2nd and 3rd game's running back plays                                
+    playInfoDict = NFLFileLogistics.getJSONFiles(game2Plays)
+    for play_file2 in playInfoDict:
+        play = NFLFileLogistics.loadJSONFile2(play_file2)
+        for running_back in rb_list:
+            for stat_getter in play["play"]["playStats"]:
+                for key in stat_getter:
+                    if key == "nflId":
+                        if stat_getter[key] == running_back[0]:
+                            if running_back[0] not in rb_dict:
+                                rb_dict[running_back[0]] = []
+                                rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+                            else :
+                                if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
+                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
+    playInfoDict = NFLFileLogistics.getJSONFiles(game3Plays)
+    for play_file3 in playInfoDict:
+        play = NFLFileLogistics.loadJSONFile3(play_file3)
+        for running_back in rb_list:
+            for stat_getter in play["play"]["playStats"]:
+                for key in stat_getter:
+                    if key == "nflId":
+                        if stat_getter[key] == running_back[0]:
+                            if running_back[0] not in rb_dict:
+                                rb_dict[running_back[0]] = []
+                                rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+                            else :
+                                if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
+                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
 
 # print rb_dict
 
@@ -67,9 +99,16 @@ def calculateInsideRun(rb_play_dict):
         total_inside_plays = 0
         total_inside_yards = 0
         for ngsGameandPlayID in rb_play_dict[rbID]:
-            if (ngsGameandPlayID[0] == 1): #Check Game
+            game_num = ngsGameandPlayID[0]
+            if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
-                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                tempFile = None
+                if game_num == 1:
+                    tempFile = NFLFileLogistics.loadJSONFile1(ngsPlayID_string + ".json")
+                elif game_num == 2:
+                    tempFile = NFLFileLogistics.loadJSONFile2(ngsPlayID_string + ".json")
+                else: 
+                    tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
                 if tempFile["play"]["playType"] == "play_type_rush":
                     offensive_tackles_loc = offensive_tackles_y(tempFile)
                     line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
@@ -111,9 +150,16 @@ def calculateOutsideRun(rb_play_dict):
         total_outside_plays = 0
         total_outside_yards = 0
         for ngsGameandPlayID in rb_play_dict[rbID]:
-            if (ngsGameandPlayID[0] == 1): #Check Game
+            game_num = ngsGameandPlayID[0]
+            if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
-                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                tempFile = None
+                if game_num == 1:
+                    tempFile = NFLFileLogistics.loadJSONFile1(ngsPlayID_string + ".json")
+                elif game_num == 2:
+                    tempFile = NFLFileLogistics.loadJSONFile2(ngsPlayID_string + ".json")
+                else: 
+                    tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
                 if tempFile["play"]["playType"] == "play_type_rush":
                     offensive_tackles_loc = offensive_tackles_y(tempFile)
                     line_of_scrimmage = tempFile["play"]["absoluteYardlineNumber"]
@@ -155,30 +201,38 @@ def speed(runningPlayDict):
         speed_array = []
         for ngsGameandPlayID in runningPlayDict[rbID]:
             max_speed = 0
-            if (ngsGameandPlayID[0] == 1): #Check Game
-                ngsPlayID_string = str(ngsGameandPlayID[1])
-                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
-                if tempFile["play"]["playType"] == "play_type_rush":
-                    for playStat in tempFile["play"]["playStats"]:
-                        if "nflId" in playStat:
-                            if playStat["nflId"] == rbID:
+            game_num = ngsGameandPlayID[0]
+            tempFile = None
+            if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
+                ngsPlayID_string = str(ngsGameandPlayID[1])  
+                if game_num == 1:
+                    tempFile = NFLFileLogistics.loadJSONFile1(ngsPlayID_string + ".json")
+                elif game_num == 2:
+                    tempFile = NFLFileLogistics.loadJSONFile2(ngsPlayID_string + ".json")
+                else: 
+                    tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
+                incomplete = False
+            if tempFile["play"]["playType"] == "play_type_rush":
+                for playStat in tempFile["play"]["playStats"]:
+                    if "nflId" in playStat:
+                        if playStat["nflId"] == rbID:
                                 
                                     
                 # if tempFile["play"]["playStats"][0]["yards"] < 5: 
                 #     print("RB " + str(rbID) + " did not run enough")
                 #     continue
-                                if (playStat["statId"] == 10 or playStat["statId"] == 11) and playStat["yards"] >= 5:
+                            if (playStat["statId"] == 10 or playStat["statId"] == 11) and playStat["yards"] >= 5:
                                     
-                                    for tracking_data in tempFile["homeTrackingData"]:
-                                        if tracking_data["nflId"] == rbID:
-                                            for player_data in tracking_data["playerTrackingData"]:
-                                                max_speed = max(max_speed, player_data["s"])
-                                            speed_array.append(max_speed)
-                                    for tracking_data in tempFile["awayTrackingData"]:
-                                        if tracking_data["nflId"] == rbID:
-                                            for player_data in tracking_data["playerTrackingData"]:
-                                                max_speed = max(max_speed, player_data["s"])
-                                            speed_array.append(max_speed)
+                                for tracking_data in tempFile["homeTrackingData"]:
+                                   if tracking_data["nflId"] == rbID:
+                                        for player_data in tracking_data["playerTrackingData"]:
+                                            max_speed = max(max_speed, player_data["s"])
+                                        speed_array.append(max_speed)
+                                for tracking_data in tempFile["awayTrackingData"]:
+                                    if tracking_data["nflId"] == rbID:
+                                        for player_data in tracking_data["playerTrackingData"]:
+                                            max_speed = max(max_speed, player_data["s"])
+                                        speed_array.append(max_speed)
         avg_speed = 0
         if len(speed_array) != 0:
             for speed in speed_array:
@@ -222,9 +276,16 @@ def calculateShortYardage(rb_play_dict):
         totalEligiblePlays = 0
         yardsGained = 0.0
         for ngsGameandPlayID in rb_play_dict[rbID]:
-            if (ngsGameandPlayID[0] == 1): #Check Game
+            game_num = ngsGameandPlayID[0]
+            if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
-                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                tempFile = None
+                if game_num == 1:
+                    tempFile = NFLFileLogistics.loadJSONFile1(ngsPlayID_string + ".json")
+                elif game_num == 2:
+                    tempFile = NFLFileLogistics.loadJSONFile2(ngsPlayID_string + ".json")
+                else: 
+                    tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
                 if (tempFile["play"]["playType"] == "play_type_rush"):
                     if (tempFile["play"]["yardsToGo"] <= 3):
 
@@ -294,9 +355,16 @@ def calculatePassCatching(runningPlayDict):
         # print runningPlayDict[rbID]
 
         for ngsGameandPlayID in runningPlayDict[rbID]:
-            if (ngsGameandPlayID[0] == 1): #Check Game
+            game_num = ngsGameandPlayID[0]
+            if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
-                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                tempFile = None
+                if game_num == 1:
+                    tempFile = NFLFileLogistics.loadJSONFile1(ngsPlayID_string + ".json")
+                elif game_num == 2:
+                    tempFile = NFLFileLogistics.loadJSONFile2(ngsPlayID_string + ".json")
+                else: 
+                    tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
                 incomplete = False
                 if (tempFile["play"]["playType"] == "play_type_pass"):
                     #print "Pass Play"
@@ -326,6 +394,7 @@ def calculatePassCatching(runningPlayDict):
 
 getPlayers()
 make_rb_dict()
+#print rb_dict
 calculatePassCatching(rb_dict)
 calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
@@ -336,7 +405,10 @@ calculateOutsideRun(rb_dict)
 #print("Done with outer")
 speed(rb_dict)
 #print speedRBRatio
-#print rb_dict
+print rb_dict
+
+
+
 
 for ID in insideRBRatio:
     if ID in rbIDMetricStorage:
@@ -359,7 +431,7 @@ for ID in speedRBRatio:
         rbIDMetricStorage[ID] = []
         rbIDMetricStorage[ID].append(("Speed Run Metric", speedRBRatio[ID]))
 
-
+print "Printing the metric storage\n"
 print rbIDMetricStorage
 
                     

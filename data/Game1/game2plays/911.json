@@ -1,0 +1,76 @@
+{
+  "gameId": 2,
+  "ngsPlayId": 911,
+  "gsisPlayId": 4220,
+  "play": {
+    "playType": "play_type_rush",
+    "yardlineSide": "BER",
+    "absoluteYardlineNumber": 35,
+    "yardlineNumber": 25,
+    "timeOfDayUTC": "2015-12-13T21:17:45.000Z",
+    "isPenalty": false,
+    "playStats": [
+      {
+        "nflId": 2532876,
+        "playerName": "Tyrann Wilcox",
+        "statId": 10,
+        "yards": 4
+      },
+      {
+        "nflId": 2543704,
+        "playerName": "Andre Patterson",
+        "statId": 79,
+        "yards": 0
+      }
+    ],
+    "playId": 4220,
+    "playDescription": "(1:21) (Shotgun) Tyrann Wilcox up the middle to BER 29 for 4 yards (Andre Patterson) ",
+    "quarter": 4,
+    "down": 2,
+    "yardsToGo": 5,
+    "possessionTeamId": "3",
+    "scoringPlay": false,
+    "endQuarterPlay": false,
+    "specialTeamsPlay": false,
+    "timeout": false,
+    "challengeTimeout": false,
+    "gameClock": "01:21",
+    "yardline": "BER 25",
+    "isScoring": false,
+    "isEndQuarter": false,
+    "isSTPlay": false
+  },
+  "schedule": {
+    "season": 2015,
+    "seasonType": "REG",
+    "week": 14,
+    "gameId": 2,
+    "gameDate": "12/13/2015",
+    "gameTimeEastern": "13:00:00",
+    "gameTimeLocal": "13:00:00",
+    "isoTime": 1450029600000,
+    "homeTeamId": 4,
+    "visitorTeamId": 3,
+    "homeTeamAbbr": "COL",
+    "visitorTeamAbbr": "BER",
+    "gameType": "REG",
+    "visitorTeam": {
+      "season": 2015,
+      "teamId": 3,
+      "abbr": "BER",
+      "cityState": "Berlin",
+      "fullName": "Berlin Thunder",
+      "nick": "Thunder"
+    },
+    "homeTeam": {
+      "season": 2015,
+      "teamId": 4,
+      "abbr": "COL",
+      "cityState": "Cologne",
+      "fullName": "Cologne Centurions",
+      "nick": "Centurions"
+    }
+  },
+  "homeTrackingData": [],
+  "awayTrackingData": []
+}
