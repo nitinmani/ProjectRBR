@@ -627,6 +627,7 @@ class Radar(object):
 
 
 
+
 	# def func(label):
 	#     if label == '2 Hz':
 	#         l0.set_visible(not l0.get_visible())
@@ -670,11 +671,17 @@ for rb in rb_list:
     if rb[0] in playerMetricScores:
         for score in playerMetricScores[rb[0]]:
             scores.append(score[1]/4)
-            print scores
+            # print scores
         if color_num <= 4:
             radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2])
             color_num = color_num + 1
-radar.ax.legend()
+
+
+
+# radar.ax.legend()
+radar.ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+# plt.legend(bbox_to_anchor=(1, 1),
+#            bbox_transform=plt.gcf().transFigure)
 
 # check.on_clicked(func)
 plt.show()
