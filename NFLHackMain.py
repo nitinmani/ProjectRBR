@@ -35,7 +35,7 @@ def getPlayers():
         for player in roster["teamPlayers"]:
             if player["positionGroup"] == "RB":
                 rb_list.append((player["nflId"], roster["team"]["abbr"]))
-            if player["position"] == "OT":
+            if player["position"] == "OT" or player["position"] == "T":
                 ot_list.append((player["nflId"], roster["team"]["abbr"]))
             if player["positionGroup"] == "OL":
                 ol_list.append((player["nflId"], roster["team"]["abbr"]))
@@ -59,15 +59,40 @@ make_rb_dict()
 
 
 
+
 #def calculateShortYardage(RB_ID):
 #    RBPlayerIDs = getPlayers("RB")
 #    #May have to make a call to Nitin's method for runningPlays
 #    for playID in runningPlays:
         
+def calculateInsideRun(rb_plays):
+	total_inside_plays = 0
+	total_inside_yards = 0
 
 
+
+print ot_list
 
 #Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
+# def offensive_tackles_y(play):
+# 	ot_in_play_y = []
+
+# 	for tackle in ot_list:
+# 		print ot_list
+# 		for playerH in "homeTrackingData":
+# 			if tackle[0] == playerH["nflId"] and len(ot_in_play) <= 2:
+# 				for player_data in playerH["playerTrackingData"]:
+# 					if player_data["event"] == "snap":
+# 						ot_in_play.append(player_data["y"])
+# 		for playerA in "awayTrackingData":
+# 			if tackle[0] == playerA["nflId"] and len(ot_in_play) <= 2:
+# 				for player_data in playerA["playerTrackingData"]:
+# 					if player_data["event"] == "snap":
+# 						ot_in_play.append(player_data["y"])
+# 	return ot_in_play_y
+
+# OT_Test = NFLFileLogistics.loadJSONFile("125.JSON")
+# print offensive_tackles_y(OT_Test)
 
 #Two Cases from Here:
 
