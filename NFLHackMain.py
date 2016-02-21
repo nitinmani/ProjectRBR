@@ -21,7 +21,7 @@ rb_dict = {}
 rb_list = []
 ot_list = []
 ol_list = []
-runningBackRatios = {}
+rbIDMetricStorage = {}
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
 def getPlayers():
@@ -122,6 +122,35 @@ def calculateShortYardage(runningPlayDict):
             averageYardsGained = yardsGained/(totalEligiblePlays)
             successRatio = (totalSuccesses/(totalEligiblePlays))
             calculatedTuple = (averageYardsGained, successRatio)
-        runningBackRatios[rbID] = calculatedTuple
+        if (rbID in rbIDMetricStorage):
+            rbIDMetricStorage[rbID].append("Short Yardage Metric", calculatedTuple)
+        else:
+            rbIDMetricStorage[rbID] = [("Short Yardage Metric", calculatedTuple)]
 calculateShortYardage(rb_dict)
+
+def calculatePassCatching(runningPlayDict):
+    totalComplete = 0
+    yardsGained = 0.0
+    totalEligiblePlays = 0
+    for rbID in runningPlayDict:
+        for ngsGameandPlayID in runningPlayDict[rbID]:
+            if (ngsGameandPlayID[0] == 1): #Check Game
+                ngsPlayID_string = str(ngsGameandPlayID[1])
+                tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
+                incomplete = False
+                if (tempFile["play"]["playType"] == "play_type_pass"):
+                    totalEligiblePlays++
+                     for playStat in tempFile["play"]["playStats"]:
+                         if playStat["statId"] == 14:
+                            incomplete = True
+                      if (!incomplete) :
+                        totalComplete++;
+                         for playStat in tempFile["play"]["playStats"]:
+                            if playStat["nflId"] == rbID:
+                                yardsGained += playStat["yards"]
+
+        averageYardsGained = yardsGained/totalEligiblePlays
+        catchSuccessRatio = totalComplete/totalEligiblePlays
+        calculatedTuple = (averageYardsGained, catchSuccessRatio)
+                    
 
