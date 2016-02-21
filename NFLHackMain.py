@@ -587,7 +587,6 @@ calcRBOutsideYardage()
 setScoresForEachMetric()
 
 
-
 """ Printing out the graph """
 
 
@@ -630,23 +629,30 @@ class Radar(object):
 # ]
 
 
-print rb_list
 fig = pl.figure(figsize=(5, 5))
 
 titles = ["Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching"]
 labels = [
-    ['0','5','10','15','20'],
-    ['0','5','10','15','20'],
-    ['0','5','10','15','20'],
-    ['0','5','10','15','20'],
-    ['0','5','10','15','20']
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15','']
 ]
 
-
+colors = ["r" , "b" , "g", "y", "k"]
 radar = Radar(fig, titles, labels)
-radar.plot([1, 3, 2, 5, 4],  "-", lw=2, color="b", alpha=0.4, label="first")
-radar.plot([2.3, 2, 3, 3, 2],"-", lw=2, color="r", alpha=0.4, label="second")
-radar.plot([3, 4, 3, 4, 2], "-", lw=2, color="g", alpha=0.4, label="third")
+color_num = 0
+
+for rb in rb_list:
+    scores = []
+    if rb[0] in playerMetricScores:
+        for score in playerMetricScores[rb[0]]:
+            scores.append(score[1]/4)
+            print scores
+        if color_num <= 4:
+            radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2])
+            color_num = color_num + 1
 radar.ax.legend()
 plt.show()
 
