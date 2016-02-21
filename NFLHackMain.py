@@ -39,7 +39,7 @@ def getPlayers():
                 ot_list.append((player["nflId"], roster["team"]["abbr"]))
             if player["positionGroup"] == "OL":
                 ol_list.append((player["nflId"], roster["team"]["abbr"]))
-getPlayers()
+
 def make_rb_dict():
     playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
     for play_file in playInfoDict:
@@ -55,7 +55,7 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
-make_rb_dict()
+
 
 # print rb_dict
 
@@ -100,11 +100,26 @@ def calculateInsideRun(rb_play_dict):
 			                				if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
 	                							total_inside_plays += 1 
 	                							total_inside_yards += play_stat["yards"]
-		if total_inside_plays == 0:
-			insideRBRatio[rbID] = 0
-		else:
-			print total_inside_plays
-			insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
+		# if total_inside_plays == 0:
+		# 	insideRBRatio[rbID] = 0
+		# else:
+		# 	print total_inside_plays
+		# 	insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
+
+        print rbID
+        print total_inside_plays
+        if total_inside_plays == 0:
+            # outsideRBRatio[rbID] = 0
+            averageYardsGained = 0
+        else:
+            #print total_outside_plays
+            #outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+            averageYardsGained = (total_inside_yards*1.0)/(total_inside_yards*1.0)
+
+        if (rbID in rbIDMetricStorage):
+            rbIDMetricStorage[rbID].append(("Inside Run Metric", averageYardsGained))
+        else:
+            rbIDMetricStorage[rbID] = [("Inside Run Metric", averageYardsGained)]
 
 def calculateOutsideRun(rb_play_dict):
 	for rbID in rb_play_dict:
@@ -145,11 +160,26 @@ def calculateOutsideRun(rb_play_dict):
 			                				if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
 	                							total_outside_plays += 1 
 	                							total_outside_yards += play_stat["yards"]
-		if total_outside_plays == 0:
-			outsideRBRatio[rbID] = 0
-		else:
-			print total_outside_plays
-			outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+		# if total_outside_plays == 0:
+		# 	# outsideRBRatio[rbID] = 0
+  #           averageYardsGained = 0
+		# else:
+		# 	#print total_outside_plays
+		# 	#outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+  #           averageYardsGained = ((total_outside_yards*1.0)/(total_outside_plays*1.0))
+
+        if total_outside_plays == 0:
+            # outsideRBRatio[rbID] = 0
+            averageYardsGained = 0
+        else:
+            #print total_outside_plays
+            #outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
+            averageYardsGained = ((total_inside_yards*1.0)/(total_inside_yards*1.0))
+
+        if (rbID in rbIDMetricStorage):
+            rbIDMetricStorage[rbID].append(("Outside Run Metric", averageYardsGained))
+        else:
+            rbIDMetricStorage[rbID] = [("Outside Run Metric", averageYardsGained)]
 
 
 
@@ -221,7 +251,7 @@ def calculateShortYardage(runningPlayDict):
             successRatio = ((totalSuccesses*1.0)/(totalEligiblePlays*1.0))
             calculatedTuple = (averageYardsGained, successRatio)
         if (rbID in rbIDMetricStorage):
-            rbIDMetricStorage[rbID].append("Short Yardage Metric", calculatedTuple)
+            rbIDMetricStorage[rbID].append(("Short Yardage Metric", calculatedTuple))
         else:
             rbIDMetricStorage[rbID] = [("Short Yardage Metric", calculatedTuple)]
 
@@ -243,7 +273,7 @@ def min_and_max(trackingData, rbid, scrimmage):
 	return max_y - slope*(max_x - scrimmage)
 
 
-calculateShortYardage(rb_dict)
+# calculateShortYardage(rb_dict)
 # print rbIDMetricStorage
 
 def calculatePassCatching(runningPlayDict):
@@ -288,11 +318,17 @@ def calculatePassCatching(runningPlayDict):
         else:
             rbIDMetricStorage[rbID] = [("Pass Catching Metric", calculatedTuple)]
 
+
+getPlayers()
+make_rb_dict()
 calculatePassCatching(rb_dict)
-print("Inside")
+calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
-print("Outside")
 calculateOutsideRun(rb_dict)
+
+print rbIDMetricStorage
+
+
 # print rbIDMetricStorage
                     
 
