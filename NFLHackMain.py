@@ -670,12 +670,15 @@ color_num = 0
 
 for rb in rb_list:
     scores = []
+    overall_score = 0
     if rb[0] in playerMetricScores:
         for score in playerMetricScores[rb[0]]:
             scores.append(score[1]/4)
+        overall_scores = (5.)*scores[0] + (5.)*scores[1] + (20./6)*scores[2] + (20./6)*scores[3] + (20./6)*scores[4]
+        overall_scores = int(overall_scores *100)/ 100.
             # print scores
         if color_num <= 4:
-            radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2])
+            radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2] + ": " + str(overall_scores))
             color_num = color_num + 1
 
 
