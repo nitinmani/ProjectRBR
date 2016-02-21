@@ -53,7 +53,9 @@ def make_rb_dict():
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
 make_rb_dict()
 
-print rb_dict
+# print rb_dict
+
+# print "   "
         
 def calculateInsideRun(rb_plays):
 	total_inside_plays = 0
@@ -137,28 +139,35 @@ calculateShortYardage(rb_dict)
 # print rbIDMetricStorage
 
 def calculatePassCatching(runningPlayDict):
-    totalComplete = 0
-    yardsGained = 0.0
-    totalEligiblePlays = 0
+
     for rbID in runningPlayDict:
+
+        totalComplete = 0
+        yardsGained = 0.0
+        totalEligiblePlays = 0
+        # print rbID
+
+        # print runningPlayDict[rbID]
+
         for ngsGameandPlayID in runningPlayDict[rbID]:
             if (ngsGameandPlayID[0] == 1): #Check Game
                 ngsPlayID_string = str(ngsGameandPlayID[1])
                 tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
                 incomplete = False
                 if (tempFile["play"]["playType"] == "play_type_pass"):
+                    #print "Pass Play"
                     # print "exists"
                     totalEligiblePlays+=1
                     for playStat in tempFile["play"]["playStats"]:
-                        if playStat["statId"] == 14:
-                            incomplete = True
-                    if (incomplete != True) :
-                        totalComplete+=1
-                        for playStat in tempFile["play"]["playStats"]:
-                            if "nflId" in playStat:
-                                if playStat["nflId"] == rbID:
+                        if "nflId" in playStat:
+                            if playStat["nflId"] == rbID:
+                                if playStat["statId"] == 21:
+                                    totalComplete +=1;
                                     yardsGained += playStat["yards"]
-
+                                elif playStat["statId"] == 22:
+                                    totalComplete +=1;
+                                    yardsGained += playStat["yards"]    
+        
         if ((totalEligiblePlays) == 0):
             calculatedTuple = (0, 0)
         else :
