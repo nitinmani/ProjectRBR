@@ -44,17 +44,18 @@ def make_rb_dict():
     playInfoDict = NFLFileLogistics.getJSONFiles(game1Plays)
     for play_file in playInfoDict:
         play = NFLFileLogistics.loadJSONFile(play_file)
-        for running_back in rb_list:
-            for stat_getter in play["play"]["playStats"]:
-                for key in stat_getter:
-                    if key == "nflId":
-                        if stat_getter[key] == running_back[0]:
-                            if running_back[0] not in rb_dict:
-                                rb_dict[running_back[0]] = []
-                                rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
-                            else :
-                                if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
-                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
+        if play["play"]["playType"] == "play_type_rush" or play["play"]["playType"] == "play_type_pass": 
+            for running_back in rb_list:
+                for stat_getter in play["play"]["playStats"]:
+                    for key in stat_getter:
+                        if key == "nflId":
+                            if stat_getter[key] == running_back[0]:
+                                if running_back[0] not in rb_dict:
+                                    rb_dict[running_back[0]] = []
+                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+                                else :
+                                    if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
+                                        rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
 
 
 # print rb_dict
@@ -62,6 +63,7 @@ def make_rb_dict():
 # print "   "
         
 def calculateInsideRun(rb_play_dict):
+
 	for rbID in rb_play_dict:
 		total_inside_plays = 0
 		total_inside_yards = 0
@@ -105,7 +107,7 @@ def calculateInsideRun(rb_play_dict):
 		# else:
 		# 	print total_inside_plays
 		# 	insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
-
+        print(rb_play_dict)
         print rbID
         print total_inside_plays
         if total_inside_plays == 0:
