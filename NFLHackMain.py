@@ -47,8 +47,13 @@ def make_rb_dict():
                         if stat_getter[key] == running_back[0]:
                             if running_back[0] not in rb_dict:
                                 rb_dict[running_back[0]] = []
-                            rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+                                rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
+                            else :
+                                if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
+                                    rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1])) 
 make_rb_dict()
+
+print rb_dict
         
 def calculateInsideRun(rb_plays):
 	total_inside_plays = 0
@@ -120,13 +125,16 @@ def calculateShortYardage(runningPlayDict):
             calculatedTuple = (0, 0)
         else:                  
             averageYardsGained = yardsGained/(totalEligiblePlays)
-            successRatio = (totalSuccesses/(totalEligiblePlays))
+            successRatio = ((totalSuccesses*1.0)/(totalEligiblePlays*1.0))
             calculatedTuple = (averageYardsGained, successRatio)
         if (rbID in rbIDMetricStorage):
             rbIDMetricStorage[rbID].append("Short Yardage Metric", calculatedTuple)
         else:
             rbIDMetricStorage[rbID] = [("Short Yardage Metric", calculatedTuple)]
+
+
 calculateShortYardage(rb_dict)
+# print rbIDMetricStorage
 
 def calculatePassCatching(runningPlayDict):
     totalComplete = 0
@@ -139,18 +147,31 @@ def calculatePassCatching(runningPlayDict):
                 tempFile = NFLFileLogistics.loadJSONFile(ngsPlayID_string + ".json")
                 incomplete = False
                 if (tempFile["play"]["playType"] == "play_type_pass"):
-                    totalEligiblePlays++
-                     for playStat in tempFile["play"]["playStats"]:
-                         if playStat["statId"] == 14:
+                    # print "exists"
+                    totalEligiblePlays+=1
+                    for playStat in tempFile["play"]["playStats"]:
+                        if playStat["statId"] == 14:
                             incomplete = True
-                      if (!incomplete) :
-                        totalComplete++;
-                         for playStat in tempFile["play"]["playStats"]:
-                            if playStat["nflId"] == rbID:
-                                yardsGained += playStat["yards"]
+                    if (incomplete != True) :
+                        totalComplete+=1
+                        for playStat in tempFile["play"]["playStats"]:
+                            if "nflId" in playStat:
+                                if playStat["nflId"] == rbID:
+                                    yardsGained += playStat["yards"]
 
-        averageYardsGained = yardsGained/totalEligiblePlays
-        catchSuccessRatio = totalComplete/totalEligiblePlays
-        calculatedTuple = (averageYardsGained, catchSuccessRatio)
+        if ((totalEligiblePlays) == 0):
+            calculatedTuple = (0, 0)
+        else :
+            averageYardsGained = yardsGained/totalEligiblePlays
+            catchSuccessRatio = (totalComplete*1.0)/(totalEligiblePlays*1.0)
+            calculatedTuple = (averageYardsGained, catchSuccessRatio)
+
+        if (rbID in rbIDMetricStorage):
+            rbIDMetricStorage[rbID].append(("Pass Catching Metric", calculatedTuple))
+        else:
+            rbIDMetricStorage[rbID] = [("Pass Catching Metric", calculatedTuple)]
+
+calculatePassCatching(rb_dict)
+# print rbIDMetricStorage
                     
 
