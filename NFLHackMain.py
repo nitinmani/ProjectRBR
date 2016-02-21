@@ -3,22 +3,16 @@ import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import pylab as pl
-# import sklearn
 import csv
 import json
 import os
 import NFLFileLogistics
-# from sklearn import svm
-# from sklearn.svm import SVC
 from scipy import stats
-# from sklearn import linear_model
-# from pprint import pprint
 
 from matplotlib.widgets import CheckButtons
 
 game1Plays ='./data/Game1/game1plays'
-teamPlays ='./data/Game1/TeamRosters' # changed this directory to have all 6 team's rosters
-#game 2 and 3 plays
+teamPlays ='./data/Game1/TeamRosters'
 game2Plays ='./data/Game1/game2plays'
 game3Plays = './data/Game1/game3plays'
 
@@ -39,9 +33,6 @@ leagueAverages = {}
 
 playermetricRatios = {}
 playerMetricScores = {}
-
-# plt.plot([1,2,3,4])
-# plt.show()
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
 def getPlayers():
@@ -71,9 +62,7 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
-
-    # print rb_dict
-    #importing 2nd and 3rd game's running back plays                                
+                               
     playInfoDict = NFLFileLogistics.getJSONFiles(game2Plays)
     for play_file2 in playInfoDict:
         play = NFLFileLogistics.loadJSONFile2(play_file2)
@@ -89,8 +78,6 @@ def make_rb_dict():
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
 
-        # print rb_dict
-
     playInfoDict = NFLFileLogistics.getJSONFiles(game3Plays)
     for play_file3 in playInfoDict:
         play = NFLFileLogistics.loadJSONFile3(play_file3)
@@ -105,10 +92,7 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
-
-        # print rb_dict
-
-# print "   "
+    # print rb_dict
         
 def calculateInsideRun(rb_play_dict):
     for rbID in rb_play_dict:
@@ -232,13 +216,7 @@ def speed(runningPlayDict):
                 for playStat in tempFile["play"]["playStats"]:
                     if "nflId" in playStat:
                         if playStat["nflId"] == rbID:
-                                
-                                    
-                # if tempFile["play"]["playStats"][0]["yards"] < 5: 
-                #     print("RB " + str(rbID) + " did not run enough")
-                #     continue
-                            if (playStat["statId"] == 10 or playStat["statId"] == 11) and playStat["yards"] >= 5:
-                                    
+                            if (playStat["statId"] == 10 or playStat["statId"] == 11) and playStat["yards"] >= 5:  
                                 for tracking_data in tempFile["homeTrackingData"]:
                                    if tracking_data["nflId"] == rbID:
                                         for player_data in tracking_data["playerTrackingData"]:
@@ -259,12 +237,9 @@ def speed(runningPlayDict):
         else:
             speedRBRatio[rbID] = 0
 
-
-#Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
 def offensive_tackles_y(play):
     max_y = 0
     min_y = 10000000000000000000
-
     for lineman in ol_list:
         for playerH in play["homeTrackingData"]:
             if lineman[0] == playerH["nflId"]:
@@ -281,10 +256,6 @@ def offensive_tackles_y(play):
                             min_y = min(player_data["y"], min_y)
                             max_y = max(player_data["y"], max_y)
     return (min_y, max_y)
-
-
-#Two Cases from Here:
-
 
 def calculateShortYardage(rb_play_dict):
     for rbID in rb_play_dict:
@@ -355,21 +326,14 @@ def min_and_max(trackingData, rbid, scrimmage):
     slope = (max_y - min_y)/(max_x - min_x)
     return max_y - slope*(max_x - scrimmage)
 
-
 # calculateShortYardage(rb_dict)
 # print rbIDMetricStorage
 
 def calculatePassCatching(runningPlayDict):
-
     for rbID in runningPlayDict:
-
         totalComplete = 0
         yardsGained = 0.0
         totalEligiblePlays = 0
-        # print rbID
-
-        # print runningPlayDict[rbID]
-
         for ngsGameandPlayID in runningPlayDict[rbID]:
             game_num = ngsGameandPlayID[0]
             if (game_num == 1 or game_num == 2 or game_num == 3): #Check Game
@@ -383,8 +347,6 @@ def calculatePassCatching(runningPlayDict):
                     tempFile = NFLFileLogistics.loadJSONFile3(ngsPlayID_string + ".json")
                 incomplete = False
                 if (tempFile["play"]["playType"] == "play_type_pass"):
-                    #print "Pass Play"
-                    # print "exists"
                     totalEligiblePlays += 1
                     for playStat in tempFile["play"]["playStats"]:
                         if "nflId" in playStat:
@@ -412,11 +374,6 @@ def calculatePassCatching(runningPlayDict):
 # print rbIDMetricStorage
 
 def setLeagueAverages():
-    #leagueAverages
-
-    # {2552483: [('Pass Catching Metric', (1.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 4.2), ('Outside Run Metric', 5.698275862068965), ('Speed Run Metric', 6.688)], 
-    # 2552388: [('Pass Catching Metric', (0.0, 0.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 2.5), ('Outside Run Metric', 2.671875), ('Speed Run Metric', 0)], 2495173: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 1.3333333333333333), ('Outside Run Metric', 1.5121951219512195), ('Speed Run Metric', 0)], 2539272: [('Pass Catching Metric', (6.0, 0.5)), ('Short Yardage Metric', (0.0, 0.3333333333333333)), ('Inside Run Metric', 1.4), ('Outside Run Metric', 6.007246376811594), ('Speed Run Metric', 7.45)], 2553129: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2552394: [('Pass Catching Metric', (-2.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 6.333333333333333), ('Outside Run Metric', 6.333333333333333), ('Speed Run Metric', 6.38)], 2553451: [('Pass Catching Metric', (5.0, 0.6666666666666666)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 5.545454545454546), ('Outside Run Metric', 3.7914438502673797), ('Speed Run Metric', 6.395)], 2532876: [('Pass Catching Metric', (2.5, 1.0)), ('Short Yardage Metric', (3.5, 0.5)), ('Inside Run Metric', 1.0), ('Outside Run Metric', 4.046153846153846), ('Speed Run Metric', 4.525)], 2530702: [('Pass Catching Metric', (7.166666666666667, 0.6666666666666666)), ('Short Yardage Metric', (16.666666666666668, 0.6666666666666666)), ('Inside Run Metric', 2.5555555555555554), ('Outside Run Metric', 6.3803921568627455), ('Speed Run Metric', 6.8675)], 2506416: [('Pass Catching Metric', (-0.2, 0.2)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 4.461538461538462), ('Outside Run Metric', 4.0504731861198735), ('Speed Run Metric', 5.7025)], 2550419: [('Pass Catching Metric', (10.0, 0.8)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 7.0), ('Outside Run Metric', 7.0), ('Speed Run Metric', 5.92)], 2541556: [('Pass Catching Metric', (11.333333333333334, 1.0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 0.3333333333333333), ('Outside Run Metric', 14.301587301587302), ('Speed Run Metric', 10.78)], 2541173: [('Pass Catching Metric', (7.666666666666667, 0.3333333333333333)), ('Short Yardage Metric', (6.0, 1.0)), ('Inside Run Metric', 3.68), ('Outside Run Metric', 3.665768194070081), ('Speed Run Metric', 5.905714285714287)], 2550486: [('Pass Catching Metric', (7.0, 0.5)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 3.3636363636363638), ('Outside Run Metric', 3.2966507177033493), ('Speed Run Metric', 6.623333333333334)], 2536056: [('Pass Catching Metric', (0.0, 0.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 8.0), ('Outside Run Metric', 8.536585365853659), ('Speed Run Metric', 5.585)], 2495326: [('Pass Catching Metric', (0.6666666666666666, 0.6666666666666666)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2543514: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (-1.0, 0.0)), ('Inside Run Metric', 2.9375), ('Outside Run Metric', 3.3535031847133756), ('Speed Run Metric', 5.515000000000001)], 2552476: [('Pass Catching Metric', (1.0, 1.0)), ('Short Yardage Metric', (1.0, 1.0)), ('Inside Run Metric', 1.0), ('Outside Run Metric', 1.0), ('Speed Run Metric', 0)], 4445: [('Pass Catching Metric', (7.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)], 2531230: [('Pass Catching Metric', (0, 0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 0), ('Outside Run Metric', 0), ('Speed Run Metric', 0)]}
-
     passCatchingYPC = 0.0
     passCatchingCompletionRatio = 0.0
     shortYardageYPC = 0.0
@@ -424,7 +381,6 @@ def setLeagueAverages():
     insideRunYPC = 0.0
     outsideRunYPC = 0.0
     averageMaxSpeed = 0.0
-
 
     for metricArray in rbIDMetricStorage.values():
         passCatchingYPC += metricArray[0][1][0]
@@ -434,8 +390,6 @@ def setLeagueAverages():
         insideRunYPC += metricArray[2][1]
         outsideRunYPC += metricArray[3][1]
         averageMaxSpeed += metricArray[4][1]
-
-    
 
     numberPlayers =  len(rbIDMetricStorage)
 
@@ -455,98 +409,63 @@ def setLeagueAverages():
     leagueAverages["outsideRunYPC"] = outsideRunYPC
     leagueAverages["averageMaxSpeed"] =averageMaxSpeed
 
-    #2552483: [('Pass Catching Metric', (1.0, 1.0)), ('Short Yardage Metric', (0, 0)), ('Inside Run Metric', 4.2), ('Outside Run Metric', 5.698275862068965), ('Speed Run Metric', 6.688)], 
 def calcRBOutsideYardage():
-
     for rbID in rbIDMetricStorage.keys():
         playermetricRatios[rbID] = []
-
         finalResult = rbIDMetricStorage[rbID][3][1] / leagueAverages["outsideRunYPC"]
-
         playermetricRatios[rbID].append(("outsideRatio", finalResult))
-
     calcRBInsideYardage()
 
 def calcRBInsideYardage():
-
     for rbID in rbIDMetricStorage.keys():
-
         finalResult = rbIDMetricStorage[rbID][2][1] / leagueAverages["insideRunYPC"]
-
         playermetricRatios[rbID].append(("insideRatio", finalResult))
-
     calcRBopenFieldRunning()
 
 def calcRBopenFieldRunning():
-
     for rbID in rbIDMetricStorage.keys():
-
         finalResult = rbIDMetricStorage[rbID][4][1] / leagueAverages["averageMaxSpeed"]
-
         playermetricRatios[rbID].append(("speedRatio", finalResult))
-
     calcRBpassCatching()
 
 def calcRBpassCatching():
-
 	for rbID in rbIDMetricStorage.keys():
-
 		partYPC = rbIDMetricStorage[rbID][0][1][0] / leagueAverages["passCatchingYPC"]
 		partCompletionRatio = rbIDMetricStorage[rbID][0][1][1] / leagueAverages["passCatchingCompletionRatio"]
 		finalResult = partYPC + partCompletionRatio
 		playermetricRatios[rbID].append(("passCatchingRatio", finalResult))
-
 	calcRBshortYardage()
 
-
 def calcRBshortYardage():
-
     for rbID in rbIDMetricStorage.keys():
-
         partYPC = rbIDMetricStorage[rbID][1][1][0] / leagueAverages["shortYardageYPC"]
         partCompletionRatio = rbIDMetricStorage[rbID][1][1][1] / leagueAverages["shortYardageSuccessRatio"]
         finalResult = partYPC + partCompletionRatio
-
         playermetricRatios[rbID].append(("shortYardageRatio", finalResult))
 
 def setScoresForEachMetric():
-
 	index = 0
-
 	while index < 5 :
-
 		rbIDs = []
 		tempArray = []
-
 		for rbId, listofMetricRatios in playermetricRatios.items():
 			rbIDs.append(rbId)
 			tempArray.append(listofMetricRatios[index][1])
-
 		a = np.array(tempArray)
 		zscores = stats.zscore(a)
 
-		# print("All running backs:")
-		# print rbIDs
 		for i in range(0, len(rbIDs)):
 			if index == 0:
 				playerMetricScores[rbIDs[i]] = []
-			# print "What it look lik " 
-			# print  playerMetricScores
-
-
 			zscore = zscores[i]
 			score = stats.norm.cdf(zscore) * 20
 			playerMetricScores[rbIDs[i]].append((metrics[index], score))
 
 		index+=1
 
-
-	# print playerMetricScores
-
-"""Basically where all the function calls are happening in the program"""
+"""Main Function Calls"""
 getPlayers()
 make_rb_dict()
-#print rb_dict
 calculatePassCatching(rb_dict)
 calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
@@ -557,9 +476,9 @@ calculateOutsideRun(rb_dict)
 #print("Done with outer")
 speed(rb_dict)
 #print speedRBRatio
-# print rb_dict
+#print rb_dict
 
-# print rbIDMetricStorage
+#print rbIDMetricStorage
 for ID in insideRBRatio:
     if ID in rbIDMetricStorage:
         rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
@@ -584,18 +503,13 @@ for ID in speedRBRatio:
 
 setLeagueAverages()
 calcRBOutsideYardage()
-
 setScoresForEachMetric()
 
-
 """ Printing out the graph """
-
-
 class Radar(object):
 
     def __init__(self, fig, titles, labels, rect=None):
         if rect is None:
-            #rect = [0.05, 0.05, 0.95, 0.95]
             rect = [0.1, 0.1, 0.8, 0.8]
 
         self.n = len(titles) 
@@ -617,40 +531,11 @@ class Radar(object):
             ax.spines["polar"].set_visible(False)
             ax.set_ylim(0, 5)
 
-	#check = CheckButtons(self.ax, ('2 Hz', '4 Hz', '6 Hz'), (False, True, True))
     def plot(self, values, *args, **kw):
         angle = np.deg2rad(np.r_[self.angles, self.angles[0]])
         values = np.r_[values, values[0]]
         self.ax.set_title("Euroleauge Week 1 RBR")
         self.ax.plot(angle, values, *args, **kw)
-
-
-
-
-
-	# def func(label):
-	#     if label == '2 Hz':
-	#         l0.set_visible(not l0.get_visible())
-	#     elif label == '4 Hz':
-	#         l1.set_visible(not l1.get_visible())
-	#     elif label == '6 Hz':
-	#         l2.set_visible(not l2.get_visible())
-	#     plt.draw()
-	# check.on_clicked(func)
-
-
-
-# titles = list("ABCDE")
-
-# labels = [
-#     list("abcde"), list("12345"), list("uvwxy"), 
-#     ["one"py, "two", "three", "four", "five"],
-#     list("jklmn")
-# ]
-
-
-
-#titles = list("Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching")
 
 titles = ["Outside", "Inside", "Downfield", "Short Yardage" , "Pass Catch"]
 labels = [
@@ -676,8 +561,6 @@ colors = ["r" , "b" , "g", "y", "k"]
 plots = []
 color_num = 0
 
-#==check = CheckButtons(None, ('2 Hz', '4 Hz', '6 Hz'), (False, True, True))
-
 for rb in rb_list:
     scores = []
     overall_score = 0
@@ -686,7 +569,6 @@ for rb in rb_list:
             scores.append(score[1]/4)
         overall_scores = (5.)*scores[0] + (5.)*scores[1] + (20./6)*scores[2] + (20./6)*scores[3] + (20./6)*scores[4]
         overall_scores = int(overall_scores *100)/ 100.
-            # print scores
         if color_num <= 4:
             plots.append((scores,  "-", 2, colors[color_num], 0.4, rb[2] + ": " + str(overall_scores)))
             #radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2] + ": " + str(overall_scores))
@@ -695,33 +577,6 @@ for rb in rb_list:
 radar = Radar(fig, titles, labels)
 for elem in plots:
     radar.plot(elem[0], elem[1], lw=elem[2], color=elem[3], alpha=elem[4], label=elem[5])
-
-
-
 radar.ax.legend()
 radar.ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-# plt.legend(bbox_to_anchor=(1, 1),
-#            bbox_transform=plt.gcf().transFigure)
-
-# check.on_clicked(func)
 plt.show()
-
-
-# print playermetricRatios
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
-
