@@ -49,6 +49,38 @@ def make_rb_dict():
                                 rb_dict[running_back[0]] = []
                             rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))
 make_rb_dict()
+        
+def calculateInsideRun(rb_plays):
+	total_inside_plays = 0
+	total_inside_yards = 0
+
+
+
+#Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
+def offensive_tackles_y(play):
+	max_y = 0
+	min_y = 10000000000000000000
+
+	for lineman in ol_list:
+		for playerH in play["homeTrackingData"]:
+			if lineman[0] == playerH["nflId"]:
+				for player_data in playerH["playerTrackingData"]:
+					if "event" in player_data:
+						if player_data["event"] == "snap":
+							min_y = min(player_data["y"], min_y)
+							max_y = max(player_data["y"], max_y)
+		for playerA in play["awayTrackingData"]:
+			if lineman[0] == playerA["nflId"]:
+				for player_data in playerA["playerTrackingData"]:
+					if "event" in player_data:
+						if player_data["event"] == "snap":
+							min_y = min(player_data["y"], min_y)
+							max_y = max(player_data["y"], max_y)
+	return (min_y, max_y)
+
+
+#Two Cases from Here:
+
 
 def calculateShortYardage(runningPlayDict):
     for rbID in runningPlayDict:
@@ -92,5 +124,4 @@ def calculateShortYardage(runningPlayDict):
             calculatedTuple = (averageYardsGained, successRatio)
         runningBackRatios[rbID] = calculatedTuple
 calculateShortYardage(rb_dict)
-
 
