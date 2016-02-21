@@ -25,6 +25,7 @@ positionIds = ["OT", "RB", "OL"] #SelfReference
 metrics = ["outside" , "inside", "speed", "passCatching", "shortYardage"]
 rb_dict = {}
 rb_list = []
+rb_list_name = {}
 ot_list = []
 ol_list = []
 rbIDMetricStorage = {}
@@ -48,7 +49,7 @@ def getPlayers():
         roster = NFLFileLogistics.loadTeamJSONFile(fileName) 
         for player in roster["teamPlayers"]:
             if player["positionGroup"] == "RB":
-                rb_list.append((player["nflId"], roster["team"]["abbr"]))
+                rb_list.append((player["nflId"], roster["team"]["abbr"], player["displayName"]))
             if player["position"] == "OT":
                 ot_list.append((player["nflId"], roster["team"]["abbr"]))
             if player["positionGroup"] == "OL":
@@ -465,8 +466,6 @@ def calcRBOutsideYardage():
 
     calcRBInsideYardage()
 
-
-
 def calcRBInsideYardage():
 
     for rbID in rbIDMetricStorage.keys():
@@ -543,12 +542,6 @@ def setScoresForEachMetric():
 
 	# print playerMetricScores
 
-
-
-
-
-
-
 """Basically where all the function calls are happening in the program"""
 getPlayers()
 make_rb_dict()
@@ -610,7 +603,7 @@ class Radar(object):
                          for i in range(self.n)]
 
         self.ax = self.axes[0]
-        self.ax.set_thetagrids(self.angles, labels=titles, fontsize=14)
+        self.ax.set_thetagrids(self.angles, labels=titles, fontsize=12)
 
         for ax in self.axes[1:]:
             ax.patch.set_visible(False)
@@ -636,7 +629,9 @@ class Radar(object):
 #     list("jklmn")
 # ]
 
-fig = pl.figure(figsize=(6, 6))
+
+print rb_list
+fig = pl.figure(figsize=(5, 5))
 
 titles = ["Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching"]
 labels = [
@@ -646,6 +641,7 @@ labels = [
     ['0','5','10','15','20'],
     ['0','5','10','15','20']
 ]
+
 
 radar = Radar(fig, titles, labels)
 radar.plot([1, 3, 2, 5, 4],  "-", lw=2, color="b", alpha=0.4, label="first")
