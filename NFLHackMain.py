@@ -102,26 +102,11 @@ def calculateInsideRun(rb_play_dict):
 			                				if y_loc >= offensive_tackles_loc[0] and y_loc <= offensive_tackles_loc[1]:
 	                							total_inside_plays += 1 
 	                							total_inside_yards += play_stat["yards"]
-		# if total_inside_plays == 0:
-		# 	insideRBRatio[rbID] = 0
-		# else:
-		# 	print total_inside_plays
-		# 	insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
-        print(rb_play_dict)
-        print rbID
-        print total_inside_plays
-        if total_inside_plays == 0:
-            # outsideRBRatio[rbID] = 0
-            averageYardsGained = 0
-        else:
-            #print total_outside_plays
-            #outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
-            averageYardsGained = (total_inside_yards*1.0)/(total_inside_yards*1.0)
+		if total_inside_plays == 0:
+			insideRBRatio[rbID] = 0
+		else:
+			insideRBRatio[rbID] = float(total_inside_yards) / float(total_inside_plays)
 
-        if (rbID in rbIDMetricStorage):
-            rbIDMetricStorage[rbID].append(("Inside Run Metric", averageYardsGained))
-        else:
-            rbIDMetricStorage[rbID] = [("Inside Run Metric", averageYardsGained)]
 
 def calculateOutsideRun(rb_play_dict):
 	for rbID in rb_play_dict:
@@ -162,29 +147,10 @@ def calculateOutsideRun(rb_play_dict):
 			                				if y_loc < offensive_tackles_loc[0] or y_loc > offensive_tackles_loc[1]:
 	                							total_outside_plays += 1 
 	                							total_outside_yards += play_stat["yards"]
-		# if total_outside_plays == 0:
-		# 	# outsideRBRatio[rbID] = 0
-  #           averageYardsGained = 0
-		# else:
-		# 	#print total_outside_plays
-		# 	#outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
-  #           averageYardsGained = ((total_outside_yards*1.0)/(total_outside_plays*1.0))
-
-        if total_outside_plays == 0:
-            # outsideRBRatio[rbID] = 0
-            averageYardsGained = 0
-        else:
-            #print total_outside_plays
-            #outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
-            averageYardsGained = ((total_inside_yards*1.0)/(total_inside_yards*1.0))
-
-        if (rbID in rbIDMetricStorage):
-            rbIDMetricStorage[rbID].append(("Outside Run Metric", averageYardsGained))
-        else:
-            rbIDMetricStorage[rbID] = [("Outside Run Metric", averageYardsGained)]
-
-
-
+		if total_outside_plays == 0:
+			outsideRBRatio[rbID] = 0
+		else:
+			outsideRBRatio[rbID] = float(total_outside_yards) / float(total_outside_plays)
 
 #Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
 def offensive_tackles_y(play):
@@ -326,11 +292,26 @@ make_rb_dict()
 calculatePassCatching(rb_dict)
 calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
+print insideRBRatio
+print("Done with inner")
 calculateOutsideRun(rb_dict)
+print outsideRBRatio
+print("Done with outer")
+
+for ID in insideRBRatio:
+	if ID in rbIDMetricStorage:
+		rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
+	else:
+		rbIDMetricStorage[ID] = []
+		rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
+
+for ID in outsideRBRatio:
+	if ID in rbIDMetricStorage:
+		rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
+	else:
+		rbIDMetricStorage[ID] = []
+		rbIDMetricStorage[ID].append(("Outside Run Metric", outsideRBRatio[ID]))
 
 print rbIDMetricStorage
-
-
-# print rbIDMetricStorage
                     
 
