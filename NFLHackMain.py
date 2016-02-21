@@ -595,7 +595,7 @@ class Radar(object):
 
     def __init__(self, fig, titles, labels, rect=None):
         if rect is None:
-            # rect = [0.05, 0.05, 0.95, 0.95]
+            #rect = [0.05, 0.05, 0.95, 0.95]
             rect = [0.1, 0.1, 0.8, 0.8]
 
         self.n = len(titles) 
@@ -603,6 +603,7 @@ class Radar(object):
         self.axes = [fig.add_axes(rect, projection="polar", label="axes%d" % i) 
                          for i in range(self.n)]
 
+        print self.axes
         self.ax = self.axes[0]
         self.ax.set_thetagrids(self.angles, labels=titles, fontsize=12)
 
@@ -620,8 +621,8 @@ class Radar(object):
     def plot(self, values, *args, **kw):
         angle = np.deg2rad(np.r_[self.angles, self.angles[0]])
         values = np.r_[values, values[0]]
+        self.ax.set_title("Euroleauge Week 1 RBR")
         self.ax.plot(angle, values, *args, **kw)
-       	self.ax.set_title("Euroleauge Week 1 RBR")
 
 
 
@@ -648,7 +649,6 @@ class Radar(object):
 # ]
 
 
-fig = pl.figure(figsize=(5, 5))
 
 #titles = list("Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching")
 
@@ -661,9 +661,19 @@ labels = [
     ['','5','10','15','']
 ]
 
+fig = pl.figure(figsize=(6, 6))
+
+titles = ["Outside", "Inside", "Downfield", "Short Yardage" , "Pass Catch"]
+labels = [
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15',''],
+    ['','5','10','15','']
+]
 
 colors = ["r" , "b" , "g", "y", "k"]
-radar = Radar(fig, titles, labels)
+plots = []
 color_num = 0
 
 #==check = CheckButtons(None, ('2 Hz', '4 Hz', '6 Hz'), (False, True, True))
@@ -678,12 +688,17 @@ for rb in rb_list:
         overall_scores = int(overall_scores *100)/ 100.
             # print scores
         if color_num <= 4:
-            radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2] + ": " + str(overall_scores))
+            plots.append((scores,  "-", 2, colors[color_num], 0.4, rb[2] + ": " + str(overall_scores)))
+            #radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2] + ": " + str(overall_scores))
             color_num = color_num + 1
 
+radar = Radar(fig, titles, labels)
+for elem in plots:
+    radar.plot(elem[0], elem[1], lw=elem[2], color=elem[3], alpha=elem[4], label=elem[5])
 
 
-# radar.ax.legend()
+
+radar.ax.legend()
 radar.ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 # plt.legend(bbox_to_anchor=(1, 1),
 #            bbox_transform=plt.gcf().transFigure)
