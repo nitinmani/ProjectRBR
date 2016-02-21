@@ -71,28 +71,28 @@ def calculateInsideRun(rb_plays):
 
 
 
-print ot_list
-
 #Have all the RB id's, go through all the play IDs, figure out which plays that the RB is part and that yardsToGo <=3
-# def offensive_tackles_y(play):
-# 	ot_in_play_y = []
+def offensive_tackles_y(play):
+	max_y = 0
+	min_y = 10000000000000000000
 
-# 	for tackle in ot_list:
-# 		print ot_list
-# 		for playerH in "homeTrackingData":
-# 			if tackle[0] == playerH["nflId"] and len(ot_in_play) <= 2:
-# 				for player_data in playerH["playerTrackingData"]:
-# 					if player_data["event"] == "snap":
-# 						ot_in_play.append(player_data["y"])
-# 		for playerA in "awayTrackingData":
-# 			if tackle[0] == playerA["nflId"] and len(ot_in_play) <= 2:
-# 				for player_data in playerA["playerTrackingData"]:
-# 					if player_data["event"] == "snap":
-# 						ot_in_play.append(player_data["y"])
-# 	return ot_in_play_y
+	for lineman in ol_list:
+		for playerH in play["homeTrackingData"]:
+			if lineman[0] == playerH["nflId"]:
+				for player_data in playerH["playerTrackingData"]:
+					if "event" in player_data:
+						if player_data["event"] == "snap":
+							min_y = min(player_data["y"], min_y)
+							max_y = max(player_data["y"], max_y)
+		for playerA in play["awayTrackingData"]:
+			if lineman[0] == playerA["nflId"]:
+				for player_data in playerA["playerTrackingData"]:
+					if "event" in player_data:
+						if player_data["event"] == "snap":
+							min_y = min(player_data["y"], min_y)
+							max_y = max(player_data["y"], max_y)
+	return (min_y, max_y)
 
-# OT_Test = NFLFileLogistics.loadJSONFile("125.JSON")
-# print offensive_tackles_y(OT_Test)
 
 #Two Cases from Here:
 
