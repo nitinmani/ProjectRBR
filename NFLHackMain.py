@@ -14,6 +14,8 @@ from scipy import stats
 # from sklearn import linear_model
 # from pprint import pprint
 
+from matplotlib.widgets import CheckButtons
+
 game1Plays ='./data/Game1/game1plays'
 teamPlays ='./data/Game1/TeamRosters' # changed this directory to have all 6 team's rosters
 #game 2 and 3 plays
@@ -602,15 +604,16 @@ class Radar(object):
 
     def __init__(self, fig, titles, labels, rect=None):
         if rect is None:
-            rect = [0.05, 0.05, 0.95, 0.95]
+            # rect = [0.05, 0.05, 0.95, 0.95]
+            rect = [0.1, 0.1, 0.8, 0.8]
 
-        self.n = len(titles)
+        self.n = len(titles) 
         self.angles = np.arange(90, 90+360, 360.0/self.n)
         self.axes = [fig.add_axes(rect, projection="polar", label="axes%d" % i) 
                          for i in range(self.n)]
 
         self.ax = self.axes[0]
-        self.ax.set_thetagrids(self.angles, labels=titles, fontsize=14)
+        self.ax.set_thetagrids(self.angles, labels=titles, fontsize=12)
 
         for ax in self.axes[1:]:
             ax.patch.set_visible(False)
@@ -622,10 +625,26 @@ class Radar(object):
             ax.spines["polar"].set_visible(False)
             ax.set_ylim(0, 5)
 
+	#check = CheckButtons(self.ax, ('2 Hz', '4 Hz', '6 Hz'), (False, True, True))
     def plot(self, values, *args, **kw):
         angle = np.deg2rad(np.r_[self.angles, self.angles[0]])
         values = np.r_[values, values[0]]
         self.ax.plot(angle, values, *args, **kw)
+       	self.ax.set_title("Euroleauge Week 1 RBR")
+
+
+
+
+	# def func(label):
+	#     if label == '2 Hz':
+	#         l0.set_visible(not l0.get_visible())
+	#     elif label == '4 Hz':
+	#         l1.set_visible(not l1.get_visible())
+	#     elif label == '6 Hz':
+	#         l2.set_visible(not l2.get_visible())
+	#     plt.draw()
+	# check.on_clicked(func)
+
 
 
 # titles = list("ABCDE")
@@ -638,7 +657,9 @@ class Radar(object):
 
 fig = pl.figure(figsize=(6, 6))
 
-titles = ["Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching"]
+#titles = list("Outside Running", "Inside Running", "Downfield Running", "Short Yardage Running" , "Pass Catching")
+
+titles = ["Outside", "Inside", "Downfield", "Short Yardage" , "Pass Catch"]
 labels = [
     ['0','5','10','15','20'],
     ['0','5','10','15','20'],
@@ -652,6 +673,8 @@ radar.plot([1, 3, 2, 5, 4],  "-", lw=2, color="b", alpha=0.4, label="first")
 radar.plot([2.3, 2, 3, 3, 2],"-", lw=2, color="r", alpha=0.4, label="second")
 radar.plot([3, 4, 3, 4, 2], "-", lw=2, color="g", alpha=0.4, label="third")
 radar.ax.legend()
+
+# check.on_clicked(func)
 plt.show()
 
 
