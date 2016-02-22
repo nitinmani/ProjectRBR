@@ -1,3 +1,7 @@
+"""Developers
+Neil Danait, Vaibhav Srikaran, Nitin Manivasagan, Sampath Duddu, Ronak Modi
+"""
+
 import scipy
 import numpy as np
 import matplotlib.cm as cm
@@ -8,8 +12,6 @@ import json
 import os
 import NFLFileLogistics
 from scipy import stats
-
-from matplotlib.widgets import CheckButtons
 
 game1Plays ='./data/Game1/game1plays'
 teamPlays ='./data/Game1/TeamRosters'
@@ -30,8 +32,7 @@ insideRBRatio = {}
 outsideRBRatio = {}
 speedRBRatio = {}
 leagueAverages = {}
-
-playermetricRatios = {}
+playerMetricRatio = {}
 playerMetricScores = {}
 
 """For team json file in TeamRoster, retrieves all ID's for provided position"""
@@ -92,7 +93,6 @@ def make_rb_dict():
                             else :
                                 if ((play["gameId"], play["ngsPlayId"], running_back[1]) not in rb_dict[running_back[0]]) :
                                     rb_dict[running_back[0]].append((play["gameId"], play["ngsPlayId"], running_back[1]))  
-    # print rb_dict
         
 def calculateInsideRun(rb_play_dict):
     for rbID in rb_play_dict:
@@ -326,9 +326,6 @@ def min_and_max(trackingData, rbid, scrimmage):
     slope = (max_y - min_y)/(max_x - min_x)
     return max_y - slope*(max_x - scrimmage)
 
-# calculateShortYardage(rb_dict)
-# print rbIDMetricStorage
-
 def calculatePassCatching(runningPlayDict):
     for rbID in runningPlayDict:
         totalComplete = 0
@@ -370,8 +367,6 @@ def calculatePassCatching(runningPlayDict):
         else:
             rbIDMetricStorage[rbID] = [("Pass Catching Metric", calculatedTuple)]
 
-# print "Printing the metric storage\n"
-# print rbIDMetricStorage
 
 def setLeagueAverages():
     passCatchingYPC = 0.0
@@ -411,57 +406,57 @@ def setLeagueAverages():
 
 def calcRBOutsideYardage():
     for rbID in rbIDMetricStorage.keys():
-        playermetricRatios[rbID] = []
+        playerMetricRatio[rbID] = []
         finalResult = rbIDMetricStorage[rbID][3][1] / leagueAverages["outsideRunYPC"]
-        playermetricRatios[rbID].append(("outsideRatio", finalResult))
+        playerMetricRatio[rbID].append(("outsideRatio", finalResult))
     calcRBInsideYardage()
 
 def calcRBInsideYardage():
     for rbID in rbIDMetricStorage.keys():
         finalResult = rbIDMetricStorage[rbID][2][1] / leagueAverages["insideRunYPC"]
-        playermetricRatios[rbID].append(("insideRatio", finalResult))
+        playerMetricRatio[rbID].append(("insideRatio", finalResult))
     calcRBopenFieldRunning()
 
 def calcRBopenFieldRunning():
     for rbID in rbIDMetricStorage.keys():
         finalResult = rbIDMetricStorage[rbID][4][1] / leagueAverages["averageMaxSpeed"]
-        playermetricRatios[rbID].append(("speedRatio", finalResult))
+        playerMetricRatio[rbID].append(("speedRatio", finalResult))
     calcRBpassCatching()
 
 def calcRBpassCatching():
-	for rbID in rbIDMetricStorage.keys():
-		partYPC = rbIDMetricStorage[rbID][0][1][0] / leagueAverages["passCatchingYPC"]
-		partCompletionRatio = rbIDMetricStorage[rbID][0][1][1] / leagueAverages["passCatchingCompletionRatio"]
-		finalResult = partYPC + partCompletionRatio
-		playermetricRatios[rbID].append(("passCatchingRatio", finalResult))
-	calcRBshortYardage()
+    for rbID in rbIDMetricStorage.keys():
+        partYPC = rbIDMetricStorage[rbID][0][1][0] / leagueAverages["passCatchingYPC"]
+        partCompletionRatio = rbIDMetricStorage[rbID][0][1][1] / leagueAverages["passCatchingCompletionRatio"]
+        finalResult = partYPC + partCompletionRatio
+        playerMetricRatio[rbID].append(("passCatchingRatio", finalResult))
+    calcRBshortYardage()
 
 def calcRBshortYardage():
     for rbID in rbIDMetricStorage.keys():
         partYPC = rbIDMetricStorage[rbID][1][1][0] / leagueAverages["shortYardageYPC"]
         partCompletionRatio = rbIDMetricStorage[rbID][1][1][1] / leagueAverages["shortYardageSuccessRatio"]
         finalResult = partYPC + partCompletionRatio
-        playermetricRatios[rbID].append(("shortYardageRatio", finalResult))
+        playerMetricRatio[rbID].append(("shortYardageRatio", finalResult))
 
 def setScoresForEachMetric():
-	index = 0
-	while index < 5 :
-		rbIDs = []
-		tempArray = []
-		for rbId, listofMetricRatios in playermetricRatios.items():
-			rbIDs.append(rbId)
-			tempArray.append(listofMetricRatios[index][1])
-		a = np.array(tempArray)
-		zscores = stats.zscore(a)
+    index = 0
+    while index < 5 :
+        rbIDs = []
+        tempArray = []
+        for rbId, listofMetricRatios in playerMetricRatio.items():
+            rbIDs.append(rbId)
+            tempArray.append(listofMetricRatios[index][1])
+        a = np.array(tempArray)
+        zscores = stats.zscore(a)
 
-		for i in range(0, len(rbIDs)):
-			if index == 0:
-				playerMetricScores[rbIDs[i]] = []
-			zscore = zscores[i]
-			score = stats.norm.cdf(zscore) * 20
-			playerMetricScores[rbIDs[i]].append((metrics[index], score))
+        for i in range(0, len(rbIDs)):
+            if index == 0:
+                playerMetricScores[rbIDs[i]] = []
+            zscore = zscores[i]
+            score = stats.norm.cdf(zscore) * 20
+            playerMetricScores[rbIDs[i]].append((metrics[index], score))
 
-		index+=1
+        index+=1
 
 """Main Function Calls"""
 getPlayers()
@@ -469,16 +464,20 @@ make_rb_dict()
 calculatePassCatching(rb_dict)
 calculateShortYardage(rb_dict)
 calculateInsideRun(rb_dict)
-#print insideRBRatio
-#print("Done with inner")
 calculateOutsideRun(rb_dict)
-#print outsideRBRatio
-#print("Done with outer")
 speed(rb_dict)
-#print speedRBRatio
-#print rb_dict
 
-#print rbIDMetricStorage
+print("******InsideRBRatio******")
+print (insideRBRatio)
+print("******OutsideRBRatio******")
+print (outsideRBRatio)
+print("******SpeedRBRatio******")
+print (speedRBRatio)
+print("******RunningBackDictionary******")
+print (rb_dict)
+print("******RunningBackIDMetricStorage******")
+print (rbIDMetricStorage)
+
 for ID in insideRBRatio:
     if ID in rbIDMetricStorage:
         rbIDMetricStorage[ID].append(("Inside Run Metric", insideRBRatio[ID]))
@@ -500,10 +499,16 @@ for ID in speedRBRatio:
         rbIDMetricStorage[ID] = []
         rbIDMetricStorage[ID].append(("Speed Run Metric", speedRBRatio[ID]))
 
-
 setLeagueAverages()
 calcRBOutsideYardage()
 setScoresForEachMetric()
+
+print("******LeagueAverages******")
+print (leagueAverages)
+print("******PlayerMetricRatio******")
+print (playerMetricRatio)
+print("******PlayerMetricScores******")
+print (playerMetricScores)
 
 """ Printing out the graph """
 class Radar(object):
@@ -517,7 +522,6 @@ class Radar(object):
         self.axes = [fig.add_axes(rect, projection="polar", label="axes%d" % i) 
                          for i in range(self.n)]
 
-        print self.axes
         self.ax = self.axes[0]
         self.ax.set_thetagrids(self.angles, labels=titles, fontsize=12)
 
@@ -534,21 +538,21 @@ class Radar(object):
     def plot(self, values, *args, **kw):
         angle = np.deg2rad(np.r_[self.angles, self.angles[0]])
         values = np.r_[values, values[0]]
-        self.ax.set_title("Euroleauge Week 1 RBR")
+        self.ax.set_title("NFL Week 1")
         self.ax.plot(angle, values, *args, **kw)
 
-titles = ["Outside", "Inside", "Downfield", "Short Yardage" , "Pass Catch"]
+titles = ["Outside", "Inside", "Open Field", "Short Yardage" , "Pass Catch"]
 labels = [
     ['','5','10','15',''],
     ['','5','10','15',''],
     ['','5','10','15',''],
-    ['','5','10','15',''],
+    ['','5','10','15',''], 
     ['','5','10','15','']
 ]
 
 fig = pl.figure(figsize=(6, 6))
 
-titles = ["Outside", "Inside", "Downfield", "Short Yardage" , "Pass Catch"]
+titles = ["Outside", "Inside", "Open Field", "Short Yardage" , "Pass Catch"]
 labels = [
     ['','5','10','15',''],
     ['','5','10','15',''],
@@ -571,7 +575,6 @@ for rb in rb_list:
         overall_scores = int(overall_scores *100)/ 100.
         if color_num <= 4:
             plots.append((scores,  "-", 2, colors[color_num], 0.4, rb[2] + ": " + str(overall_scores)))
-            #radar.plot(scores,  "-", lw=2, color=colors[color_num], alpha=0.4, label=rb[2] + ": " + str(overall_scores))
             color_num = color_num + 1
 
 radar = Radar(fig, titles, labels)
